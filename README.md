@@ -31,6 +31,7 @@ The paper explains memory ordering from the ground up: store buffers, shared mem
 pdflatex final_latex_file
 bibtex final_latex_file
 makeglossaries final_latex_file
+makeindex final_latex_file
 pdflatex final_latex_file
 pdflatex final_latex_file
 ```
