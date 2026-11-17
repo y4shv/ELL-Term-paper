@@ -349,8 +349,8 @@
 \textbf{Name} & \textbf{Entry number}\\
 \midrule
 Dhruv Mittal & 2024MT60812\\
-Arnav Singh & 2024MT60027\\
 Yash Vashisht & 2024MT60062\\
+Arnav Singh & 2024MT60027\\
 Aditya & 2024MT10096\\
 Kashav Kumar & 2024MT10040\\
 Parth Aggarwal & 2024EE10893\\
@@ -378,6 +378,16 @@ We thank Prof. Sumantra Dutta Roy, who taught ELL305, and Prof. Subrat Kar, our 
 
 We also acknowledge the Department of Electrical Engineering and the Indian Institute of Technology Delhi for the use of their resources in the preparation of this report.
 
+
+% ---------------------------------------------------------------- abstract
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+Processors today have many cores: a phone has around eight, a laptop ten or more, and a server chip sixty-four or more. But how do these cores actually work together? If they ran one after another, extra cores would bring no benefit. If they run at the same time, new questions appear: how do they update the same variable, and how does the computer make sure that everything still turns out fine? A computer answers these questions with a memory consistency model, a set of rules for the order in which the memory operations of different cores may appear to happen. This paper studies three such models, Sequential Consistency (SC), Total Store Order (TSO) and Partial Store Order (PSO), and asks three questions. First, what restriction does each model place on the order of operations, and how do the three compare? Second, does a real processor behave the way the weaker models say? Third, what does strong ordering cost, and why do processors still not offer it?
+
+To answer them, we describe each model by how its hardware behaves, starting from the store buffer, and then write its rules as a graph in which a result is allowed only if the graph has no cycle. We test the rules on small two-thread programs called litmus tests. Store Buffering (SB) separates SC from TSO, Message Passing (MP) separates TSO from PSO, and fenced versions of both show how a fence removes the difference. A Python checker applies the rules to 2005 programs, and a second program that simulates the store buffers confirms its answers. A C program then runs SB on a real x86-64 processor, where the result that SC forbids appeared 381,311 times in ten million tries and never appeared with a fence in each thread. Finally, a cycle-by-cycle cost model shows that a core that waits for every store runs at 1.873 cycles per instruction, against 1.011 for the same core with a 56-entry store buffer.
+
+We find that the three models form a strict ladder, each allowing everything the one before it allows and more, and that a real processor shows the behaviour that TSO predicts. In short, processors keep these weaker models because waiting for every write is expensive, and correct programs, which use locks and fences in the few places that need them, never notice the difference.
+\clearpage
 
 % ---------------------------------------------------------------- abbreviations
 \chapter*{Abbreviations}
@@ -469,17 +479,25 @@ The question is simple. When both threads have finished, which pairs of values $
 
 \paragraph{Why the result is allowed.} Nothing is broken, in the hardware or in our reasoning. The reasoning above assumed that every write becomes visible to every core immediately, which is the assumption of SC. A machine that follows TSO or PSO makes no such promise, so for that machine the result is allowed. Whether a result is allowed or not depends on the rulebook the machine follows. This rulebook is called a \emph{memory consistency model}\index{memory consistency model}, and this paper is about it. We ask what SC, TSO and PSO allow, we show how to decide this using arrows between the operations, and we check on a real x86-64 machine (\cref{ch:hw}) whether the result really appears.
 
-\section{Why the topic matters}
+\section{Significance of this term paper}
 \label{sec:topic}
 
-Any program in which two threads talk to each other through memory depends on the memory consistency model. Locks, a queue between a producer and a consumer, and a flag that says ``I am done'' all assume that reads and writes are seen in a certain order. If the programmer expects a stricter order than the machine really gives, the program can go wrong. It goes wrong only rarely, so the bug is hard to find. A test that passes a thousand times proves little when the bad case shows up once in a million runs.
+Nowadays, almost every computer, from your phone to your server, will have a multicore processor. The point of having multiple cores is you can do many things at once; however, this can only be achieved if the cores are working well together. All cores share the same memory, so each core must know what the other cores have written. If the cores have differing views of the order in which things happened, the program may give incorrect results even though all the cores are performing perfectly. To resolve this problem, memory consistency models are used. The models are designed by the designers of the processor and must be trusted by all programmers using multiple cores. This makes it an important topic.
 
-The hardware reorders things because waiting is expensive. Main memory is slow, hundreds of clock cycles away, and a core that waited for every memory operation to finish before starting the next instruction would spend most of its time sitting idle. This is the problem every processor designer has to fight, as we learnt in ELL305, so designers add small helpers that keep the core busy. On the writing side the helper is the \emph{store buffer}, a queue that takes the write and finishes it in the background while the core carries on with the next instruction. On the reading side the helper is the cache, a small and fast memory that keeps recently used data close to the core, so most reads never have to go to main memory. The cache also receives the writes once the store buffer drains. Both exist for one reason, to make the processor faster. The price is the surprising result of \cref{sec:intro-sb}: because writes finish later, two cores can see the same operations in different orders. We think this is a fair trade. The odd results appear only when two threads share data, and programmers can remove them at the places that matter, using locks, atomic operations or fences, at a small cost paid only at those places. Slowing down every program to protect a few of them would be a bad deal. We return to this trade in \cref{ch:cost}.
+This topic is briefly introduced in our textbook; however, most of the information is provided in text form with some examples. This paper aims to address this issue. We take the three models described in the textbook (Sequential Consistency (SC), Total Store Order (TSO), and Partial Store Order (PSO)) and improve them in three ways.
+
+We define the models using events and graphs to show that only results that have an acyclic graph are allowed. This means we can now prove any small program using the models using an argument.
+
+We can now prove the models. We have written a Python checker and run it across 2005 programs. Furthermore, we have created another independent simulation of the store buffer, which matches the checker. This means any claims about the models can be backed up using two different methods.
+
+Finally, we relate the models to real hardware and see what performance issues there are. We have seen that the result forbidden by SC can be seen on a real x86-64 processor. This shows us the store buffer really is part of the hardware and not just an idea in a book. This also shows us a problem with testing, as we cannot prove that the result won't happen. We then create a cost model to show why the weaker models are accepted by the processors. Having a core that waits for all stores will be much slower than having a store buffer.
+
+Overall, this paper is important as multicore processors are everywhere. Getting the correct results depends on these rules, which are easy to get confused with. By providing a defined method, a functional checker, real hardware measurements, and a cost model, we have taken something we read about and tested it empirically.
 
 \section{Research questions}
 \label{sec:rq}
 
-\Cref{sec:intro-sb,sec:topic} left us with a puzzle. A tiny program gives a result that looks impossible, and the cause is a feature that designers added on purpose to make the processor faster. Once we see this, a few questions come up almost by themselves.
+\Cref{sec:intro-sb} left us with a puzzle. A tiny program gives a result that looks impossible, and the cause is a feature that designers added on purpose to make the processor faster. Once we see this, a few questions come up almost by themselves.
 
 We have met three rulebooks, SC, TSO and PSO. How do they compare with each other? Does each one allow everything the stricter one allows, plus something more, so that they form a ladder, and can we find a small program that shows the difference at each step? That is our first question. A rulebook on paper is one thing, and a real processor is another, so our second question is whether a real x86 machine really shows the strange result, and whether a programmer can remove it when it matters. Finally, SC is the easiest rulebook to understand and gives no surprises, yet no processor offers it. Our third question is what it would cost.
 
