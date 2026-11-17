@@ -67,6 +67,7 @@
 \usepackage{amsmath,amssymb}
 \usepackage{setspace}\singlespacing
 \usepackage{microtype}
+\usepackage{pgfgantt}
 \usepackage{xcolor}
 \usepackage{graphicx}
 \usepackage{float}
@@ -180,19 +181,19 @@
 \newcommand{\poloc}{\rel{po-loc}}
 \newcommand{\code}[1]{\texttt{#1}}
 \newcommand{\outc}[2]{$(#1,#2)$}
-\newcommand{\repourl}{\url{https://github.com/<group-account>/ell305-memory-consistency}}
+\newcommand{\repourl}{\url{https://github.com/y4shv/ELL-Term-paper}}
 \newcommand{\WR}{W$\to$R}
 \newcommand{\WW}{W$\to$W}
 \newcommand{\RR}{R$\to$R}
 \newcommand{\RW}{R$\to$W}
 
 % ---------- glossary ---------------------------------------------------------
-\newglossaryentry{litmus}{name={litmus test},description={A tiny program, usually of two threads, written to check one ordering rule. It always asks whether one particular final outcome is possible}}
-\newglossaryentry{po}{name={program order (po)},description={The order of instructions inside one thread, as written in the program. It never links two different threads}}
-\newglossaryentry{rf}{name={reads-from (rf)},description={An arrow from a write to the read that got its value from that write}}
-\newglossaryentry{co}{name={coherence order (co)},description={For one address, the order in which all its writes take effect. The initial write comes first}}
-\newglossaryentry{fr}{name={from-read (fr)},description={An arrow from a read to every write that is later than the write it read from. The read saw an older value, so it must come before the newer write}}
-\newglossaryentry{ppo}{name={preserved program order (ppo)},description={The part of program order that a memory model promises to keep}}
+\newglossaryentry{litmus}{text={litmus test},name={litmus test},description={A tiny program, usually of two threads, written to check one ordering rule. It always asks whether one particular final outcome is possible}}
+\newglossaryentry{po}{text={program order},name={program order (po)},description={The order of instructions inside one thread, as written in the program. It never links two different threads}}
+\newglossaryentry{rf}{text={reads-from},name={reads-from (rf)},description={An arrow from a write to the read that got its value from that write}}
+\newglossaryentry{co}{text={coherence order},name={coherence order (co)},description={For one address, the order in which all its writes take effect. The initial write comes first}}
+\newglossaryentry{fr}{text={from-read},name={from-read (fr)},description={An arrow from a read to every write that is later than the write it read from. The read saw an older value, so it must come before the newer write}}
+\newglossaryentry{ppo}{text={preserved program order},name={preserved program order (ppo)},description={The part of program order that a memory model promises to keep}}
 \newglossaryentry{sb}{name={store buffer},description={A small first-in, first-out queue between a core and its cache that holds writes, so that the core does not wait for them}}
 \newglossaryentry{fwd}{name={store-to-load forwarding},description={A read that finds a matching write in its own core's store buffer takes the value from there instead of from the cache}}
 \newglossaryentry{coh}{name={cache coherence},description={The guarantee that all cores agree on one order of the writes to each single address}}
@@ -363,8 +364,8 @@ We also acknowledge the Department of Electrical Engineering and the Indian Inst
 
 
 % ---------------------------------------------------------------- abbreviations
-\section*{Abbreviations}
-\addcontentsline{toc}{section}{Abbreviations}
+\chapter*{Abbreviations}
+\addcontentsline{toc}{chapter}{Abbreviations}
 \begin{center}
 \small
 \begin{tabular}{@{}ll@{\hspace{1.2cm}}ll@{}}
@@ -384,27 +385,35 @@ ppo & preserved program order & rfe & reads-from, external\\
 \listoftables
 
 % ---------------------------------------------------------------- map
-% (left empty on purpose: the map of the paper will be added later, here)
 \chapter*{Map of the Paper}
 \addcontentsline{toc}{chapter}{Map of the Paper}
-\begin{center}\small
-\begin{tabularx}{\textwidth}{@{}lXl@{}}
-\toprule
-Chapter & What it does & Question\\
-\midrule
-1 Introduction & A small program with a surprising result, why the topic matters, and the three questions of the paper & \\
-2 What We Read & The books and papers we used, and what we took from each & \\
-3 Memory and the Store Buffer & The store buffer, forwarding, cache coherence, and the rule that never breaks for a single address & \\
-4 Two Cores & The three models described in words, and the two litmus tests, SB and MP & \\
-5 The Rules as Math & Events, relations and graphs; the rule of each model; the graph of each test under each model & Q1\\
-6 The Python Checker & A program that applies the rules, its check on 2005 programs, and an independent store-buffer simulation & Q1\\
-7 A Real Machine & The SB test on an x86-64 machine, with and without a fence & Q2\\
-8 What Strong Ordering Costs & A simple cost model, speculation, and why SC is not shipped & Q3\\
-9 Conclusion & What the paper shows, its limits, and future work & \\
-\midrule
-Appendices & Plagiarism report, readability indices, source code, measurement data, how to reproduce, and how the work was done & \\
-\bottomrule
-\end{tabularx}
+\begin{center}
+\begin{tikzpicture}[
+  bx/.style={draw, rounded corners=3pt, thick, align=center, font=\footnotesize\hyphenpenalty=10000 , inner sep=5pt, text width=4.3cm, minimum height=1.25cm},
+  wide/.style={bx, text width=11.5cm, minimum height=1.0cm},
+  ar/.style={-{Stealth[length=2.6mm]}, very thick, draw=black!70}]
+\node[wide, fill=boxgrey] (c1) {\textbf{1\; Introduction}\\ a small program with a surprising result, why the topic matters, the three questions};
+\node[wide, fill=boxgrey, below=0.55cm of c1] (c2) {\textbf{2\; What We Read}\\ the books and papers we used, and what we took from each};
+\node[bx, fill=boxblue, below=1.1cm of c2, xshift=-4.75cm] (c3) {\textbf{3\; Memory and the Store Buffer}\\ the hardware cause};
+\node[bx, fill=boxblue, right=0.45cm of c3] (c4) {\textbf{4\; Two Cores}\\ the three models in words, the SB and MP tests};
+\node[bx, fill=boxblue, right=0.45cm of c4] (c5) {\textbf{5\; The Rules as Math}\\ events, relations, graphs, the rule of each model};
+\node[draw=black!60, dashed, rounded corners=4pt, inner sep=7pt, fit=(c3)(c4)(c5), label={[font=\footnotesize\bfseries, text=black!70]above left:The theory}] (theory) {};
+\node[bx, fill=boxgreen, below=1.5cm of c3] (c6) {\textbf{6\; The Python Checker}\\ the rules as a program, 2005 programs, a second simulation\\ \textbf{answers Q1}};
+\node[bx, fill=boxorange, below=1.5cm of c4] (c7) {\textbf{7\; A Real Machine}\\ the SB test on x86-64, with and without a fence\\ \textbf{answers Q2}};
+\node[bx, fill=boxpurple, below=1.5cm of c5] (c8) {\textbf{8\; What Strong Ordering Costs}\\ a cost model, speculation, why SC is not shipped\\ \textbf{answers Q3}};
+\node[wide, fill=boxgrey, below=1.1cm of c7] (c9) {\textbf{9\; Conclusion}\\ what the paper shows, its limits, future work};
+\node[wide, draw=black!60, dashed, fill=white, below=0.7cm of c9] (app) {\textbf{Appendices A to G}\\ plagiarism report, readability, weekly schedule, source code, measurement data, how to reproduce, how the work was done};
+\draw[ar] (c1) -- (c2);
+\draw[ar] (c2.south) -- ++(0,-0.35) -| (theory.north);
+\draw[ar] (c3) -- (c4);
+\draw[ar] (c4) -- (c5);
+\draw[ar] (theory.south -| c3) -- (c6);
+\draw[ar] (theory.south -| c4) -- (c7);
+\draw[ar] (theory.south -| c5) -- (c8);
+\draw[ar] (c6.south) -- ++(0,-0.45) -| (c9.north);
+\draw[ar] (c7) -- (c9);
+\draw[ar] (c8.south) -- ++(0,-0.45) -| (c9.north);
+\end{tikzpicture}
 \end{center}
 \clearpage
 
@@ -437,25 +446,25 @@ r1 = x;
 
 The question is simple. When both threads have finished, which pairs of values $(\code{r0}, \code{r1})$ can we end up with?
 
-\paragraph{How we normally think.} We read a program one instruction at a time, and we assume that each instruction is finished the moment we get to it. A write to memory is done as soon as it is executed, and the next read sees it. For two threads this means that the four instructions are mixed into one single line, and each thread keeps its own order inside that line. We now test this picture. Suppose \code{r0} ends as 0. Then Thread 0 read \code{y} before Thread 1 wrote 1 to it. Thread 1 reads \code{x} after it has written \code{y}, so its read comes later still. By then Thread 0 has already written \code{x = 1}, because that write came before Thread 0's own read. So Thread 1 sees 1 and \code{r1} is 1. The same argument works the other way round. In short, at least one of the two registers must end up as 1, and the result $\code{r0} = 0,\ \code{r1} = 0$ looks impossible. This way of thinking has a name, \emph{sequential consistency}, or SC, and we meet it properly in the next chapters.
+\paragraph{How we normally think.} We read a program one instruction at a time, and we assume that each instruction is finished the moment we get to it. A write to memory is done as soon as it is executed, and the next read sees it. For two threads this means that the four instructions are mixed into one single line, and each thread keeps its own order inside that line. We now test this picture. Suppose \code{r0} ends as 0. Then Thread 0 read \code{y} before Thread 1 wrote 1 to it. Thread 1 reads \code{x} after it has written \code{y}, so its read comes later still. By then Thread 0 has already written \code{x = 1}, because that write came before Thread 0's own read. So Thread 1 sees 1 and \code{r1} is 1. The same argument works the other way round. In short, at least one of the two registers must end up as 1, and the result $\code{r0} = 0,\ \code{r1} = 0$ looks impossible. This way of thinking has a name, \emph{sequential consistency}, or \gls{sc}, and we meet it properly in the next chapters.
 
-\paragraph{What the hardware does.} A real core does not wait for a write to finish. Writing is slow, so each core puts its write into a small waiting queue of its own, called a \emph{store buffer}, and moves on to the next instruction at once. The write is copied from the buffer into the core's cache a little later, and only then can the other core see it. Now run our program again. Core 0 puts \code{x = 1} in its buffer and goes on to read \code{y}. Core 1 has also only put \code{y = 1} in its buffer, so \code{y} is still 0 for everybody else, and core 0 reads 0. Core 1 does the same with \code{x} and reads 0. Both reads slip in front of both writes, and we get $\code{r0} = 0,\ \code{r1} = 0$. The rulebooks that allow this are called Total Store Order (TSO) and Partial Store Order (PSO). An ordinary x86-64 processor follows TSO.
+\paragraph{What the hardware does.} A real core does not wait for a write to finish. Writing is slow, so each core puts its write into a small waiting queue of its own, called a \emph{\gls{sb}}, and moves on to the next instruction at once. The write is copied from the buffer into the core's cache a little later, and only then can the other core see it. Now run our program again. Core 0 puts \code{x = 1} in its buffer and goes on to read \code{y}. Core 1 has also only put \code{y = 1} in its buffer, so \code{y} is still 0 for everybody else, and core 0 reads 0. Core 1 does the same with \code{x} and reads 0. Both reads slip in front of both writes, and we get $\code{r0} = 0,\ \code{r1} = 0$. The rulebooks that allow this are called Total Store Order (\gls{tso}) and Partial Store Order (\gls{pso}). An ordinary x86-64 processor follows TSO.
 
-\paragraph{So is this result wrong?} No. Nothing is broken, and there is no mistake in the hardware or in our reasoning above. The reasoning above assumed that every write becomes visible to every core immediately, and that is exactly the assumption of SC. A machine that follows TSO or PSO makes no such promise, so for that machine the result is allowed. Whether a result is allowed or not depends on the rulebook the machine follows. This rulebook is called a \emph{memory consistency model}\index{memory consistency model}, and this paper is about it. We ask what SC, TSO and PSO allow, we show how to decide this using arrows between the operations, and we check on a real x86-64 machine (\cref{ch:hw}) whether the result really appears.
+\paragraph{Why the result is allowed.} Nothing is broken, in the hardware or in our reasoning. The reasoning above assumed that every write becomes visible to every core immediately, which is the assumption of SC. A machine that follows TSO or PSO makes no such promise, so for that machine the result is allowed. Whether a result is allowed or not depends on the rulebook the machine follows. This rulebook is called a \emph{memory consistency model}\index{memory consistency model}, and this paper is about it. We ask what SC, TSO and PSO allow, we show how to decide this using arrows between the operations, and we check on a real x86-64 machine (\cref{ch:hw}) whether the result really appears.
 
 \section{Why the topic matters}
 \label{sec:topic}
 
 Any program in which two threads talk to each other through memory depends on the memory consistency model. Locks, a queue between a producer and a consumer, and a flag that says ``I am done'' all assume that reads and writes are seen in a certain order. If the programmer expects a stricter order than the machine really gives, the program can go wrong. It goes wrong only rarely, so the bug is hard to find. A test that passes a thousand times proves little when the bad case shows up once in a million runs.
 
-Why does the hardware reorder things at all? Because waiting is expensive. Main memory is slow, hundreds of clock cycles away, and a core that waited for every memory operation to finish before starting the next instruction would spend most of its time sitting idle. This is the problem every processor designer has to fight, as we learnt in ELL305, so designers add small helpers that keep the core busy. On the writing side the helper is the \emph{store buffer}, a queue that takes the write and finishes it in the background while the core carries on with the next instruction. On the reading side the helper is the cache, a small and fast memory that keeps recently used data close to the core, so most reads never have to go to main memory. The cache also receives the writes once the store buffer drains. Both exist for one reason, to make the processor faster. The price is the surprising result of \cref{sec:intro-sb}: because writes finish later, two cores can see the same operations in different orders. We think this is a fair trade. The odd results appear only when two threads share data, and programmers can remove them at the places that matter, using locks, atomic operations or fences, at a small cost paid only at those places. Slowing down every program to protect a few of them would be a bad deal. We return to this trade in \cref{ch:cost}.
+The hardware reorders things because waiting is expensive. Main memory is slow, hundreds of clock cycles away, and a core that waited for every memory operation to finish before starting the next instruction would spend most of its time sitting idle. This is the problem every processor designer has to fight, as we learnt in ELL305, so designers add small helpers that keep the core busy. On the writing side the helper is the \emph{store buffer}, a queue that takes the write and finishes it in the background while the core carries on with the next instruction. On the reading side the helper is the cache, a small and fast memory that keeps recently used data close to the core, so most reads never have to go to main memory. The cache also receives the writes once the store buffer drains. Both exist for one reason, to make the processor faster. The price is the surprising result of \cref{sec:intro-sb}: because writes finish later, two cores can see the same operations in different orders. We think this is a fair trade. The odd results appear only when two threads share data, and programmers can remove them at the places that matter, using locks, atomic operations or fences, at a small cost paid only at those places. Slowing down every program to protect a few of them would be a bad deal. We return to this trade in \cref{ch:cost}.
 
 \section{Research questions}
 \label{sec:rq}
 
 \Cref{sec:intro-sb,sec:topic} left us with a puzzle. A tiny program gives a result that looks impossible, and the cause is a feature that designers added on purpose to make the processor faster. Once we see this, a few questions come up almost by themselves.
 
-We have met three rulebooks, SC, TSO and PSO. How do they compare with each other? Does each one allow everything the stricter one allows, plus something more, so that they form a ladder, and can we find a small program that shows the difference at each step? That is our first question. A rulebook on paper is one thing, and a real processor is another, so our second question is whether a real x86 machine really shows the strange result, and whether a programmer can remove it when it matters. Finally, if the strictest rulebook, SC, is the easiest one to understand and gives no surprises, then why does no processor offer it? What would it cost? That is our third question.
+We have met three rulebooks, SC, TSO and PSO. How do they compare with each other? Does each one allow everything the stricter one allows, plus something more, so that they form a ladder, and can we find a small program that shows the difference at each step? That is our first question. A rulebook on paper is one thing, and a real processor is another, so our second question is whether a real x86 machine really shows the strange result, and whether a programmer can remove it when it matters. Finally, SC is the easiest rulebook to understand and gives no surprises, yet no processor offers it. Our third question is what it would cost.
 
 We write the three questions out below. In this paper we mainly plan to answer these three. Here we only state each one briefly, and we explain each problem in detail as we go on, in the chapter that answers it.
 
@@ -465,20 +474,9 @@ We write the three questions out below. In this paper we mainly plan to answer t
 \item[Q3] \textbf{What does strong ordering cost, and if speculation makes it cheaper, why do processors still not offer sequential consistency?} (\cref{ch:cost})
 \end{description}
 
-\section{What this paper does}
-
-The paper does four things, in this order.
-\begin{enumerate}
-\item It explains the store buffer, the hardware feature behind the surprising result (\cref{ch:storebuf}).
-\item It introduces the small two-thread programs, called litmus tests, that expose ordering, and writes the rules of each model as mathematics (\cref{ch:litmus,ch:math}).
-\item It uses a short Python program to list what each model allows, and checks that program with a second one that simulates the store buffers directly (\cref{ch:checker}).
-\item It uses a short C program to show TSO behaviour on a real x86-64 machine (\cref{ch:hw}).
-\end{enumerate}
-\Cref{ch:cost} then answers Q3.
-
 \section{How the paper is organised}
 
-The \emph{Map of the Paper}, in the front matter, lists every chapter with its purpose and the question it answers. In short, \cref{ch:storebuf,ch:litmus,ch:math} build the theory, from the hardware cause to the rules of the three models. \Cref{ch:checker,ch:hw} test that theory with a program and with a real machine. \Cref{ch:cost} asks what strong ordering costs, and \cref{ch:conclusion} concludes. A reader who only wants the results can go straight to the three boxes called \emph{Answer to Q1}, \emph{Q2} and \emph{Q3}, in \cref{sec:q1,sec:q2,sec:q3}.
+The \emph{Map of the Paper}, in the front matter, shows, as a flow chart, how the chapters connect and which question each one answers. In short, \cref{ch:storebuf,ch:litmus,ch:math} build the theory, from the hardware cause to the rules of the three models. \Cref{ch:checker,ch:hw} test that theory with a program and with a real machine. \Cref{ch:cost} asks what strong ordering costs, and \cref{ch:conclusion} concludes. A reader who only wants the results can go straight to the three boxes called \emph{Answer to Q1}, \emph{Q2} and \emph{Q3}, in \cref{sec:q1,sec:q2,sec:q3}.
 
 \section{Conventions}
 \label{sec:conventions}
@@ -488,7 +486,7 @@ These are the names and symbols we use throughout the paper.
 \item \textbf{Shared variables.} \code{x} and \code{y} live in memory and are shared by both threads. \emph{Both start at 0.}
 \item \textbf{Registers.} \code{r0} and \code{r1} are \emph{private} registers, one for each thread. No other thread can see them.
 \item \textbf{Threads.} \textbf{T0} and \textbf{T1} are the two threads, and each runs on \emph{its own core}.
-\item \textbf{Naming the operations.} The four memory operations of a litmus test are named with the letters \textbf{a, b, c, d}, in the order in which they are written. A figure can then say $a \to b$ instead of repeating the instruction.
+\item \textbf{Naming the operations.} The four memory operations of a \gls{litmus} are named with the letters \textbf{a, b, c, d}, in the order in which they are written. A figure can then say $a \to b$ instead of repeating the instruction.
 \item \textbf{Writing a result.} \outc{0}{1} always means $(\code{r0}, \code{r1}) = (0, 1)$, that is, \code{r0} is 0 and \code{r1} is 1.
 \item \textbf{References.} A small raised number, such as\cite{lamport1979}, points to the \emph{bibliography}. A mark such as \S12.4.3 points to a section of one of \emph{Prof. Sarangi's books}, and we name the book each time.
 \end{itemize}
@@ -498,7 +496,7 @@ These are the names and symbols we use throughout the paper.
 \label{ch:reading}
 % =====================================================================
 
-This chapter sets out where our ideas come from. Our reading started with the two books by Prof. Sarangi, which are the course texts for this material, and grew from there into three research papers. For each source we say what we read, what we took from it, and where in this paper it is used. Some ideas named here, such as the store buffer, are explained properly only in later chapters.
+This chapter sets out where our ideas come from. Our reading started with the two books by Prof. Sarangi, which are the course texts for this material, and grew from there into three research papers. For each source we say what we read, what we took from it, and where in this paper it is used. Some ideas named here, such as the \gls{sb}, are explained properly only in later chapters.
 
 \section{How the two books relate to this paper}
 \label{sec:books}
@@ -517,7 +515,7 @@ We worked from version 3.09 of the textbook\cite{sarangiBasic}. Chapter 12, on m
 
 In the second book\cite{sarangiNextGen}, Chapter 9, on multicore systems, starts on p.\,415 and is our main reference for how threads interact. Chapter 4 is our reference for how a single core handles its loads and stores.
 
-\paragraph{How this book shaped the paper.} Three things in our paper come straight from this book. The first is the load-store queue of Chapter 4, which is where store-to-load forwarding happens, and which we draw as a circuit in \cref{fig:forwarding}. The second is Chapter 9's way of treating an execution as a graph whose edges are relations such as \rf, together with its four sections on the four kinds of program order (\S9.5.2 to \S9.5.5). Those four sections line up exactly with the four rows of our \cref{tab:pairs}, which is the table that defines each model in our checker. The third is the material on load speculation and replay in Chapter 5, which is the hardware behind the speculation argument of \cref{ch:cost}.
+\paragraph{How this book shaped the paper.} Three things in our paper come straight from this book. The first is the load-store queue of Chapter 4, which is where \gls{fwd} happens, and which we draw as a circuit in \cref{fig:forwarding}. The second is Chapter 9's way of treating an execution as a graph whose edges are relations such as \rf, together with its four sections on the four kinds of \gls{po} (\S9.5.2 to \S9.5.5). Those four sections line up exactly with the four rows of our \cref{tab:pairs}, which is the table that defines each model in our checker. The third is the material on load speculation and replay in Chapter 5, which is the hardware behind the speculation argument of \cref{ch:cost}.
 
 \section{Three research papers}
 \label{sec:papers}
@@ -529,34 +527,34 @@ From the further reading in the two books we picked three research papers. Each 
 
 Leslie Lamport's three-page paper\cite{lamport1979} is where the term \emph{sequentially consistent} comes from. He calls a multiprocessor sequentially consistent when the result of any execution is the same as if the operations of all the processors were executed in some sequential order, with the operations of each individual processor appearing in that sequence in the order given by its program.
 
-\paragraph{What we took.} We took this definition word for word as our meaning of SC (\cref{sec:sb}). It is also the reason we count interleavings in \cref{sec:interleave}: an interleaving is exactly one of Lamport's sequential orders. Lamport also gives two requirements that a machine of his time could meet to be sequentially consistent. The first is that each processor issues its memory requests in the order of its program. A store buffer breaks this requirement on purpose, because it lets a later read go to memory before an earlier write has arrived there. That one observation is the starting point of \cref{ch:storebuf}.
+\paragraph{What we took.} We took this definition word for word as our meaning of \gls{sc} (\cref{sec:sb}). It is also the reason we count interleavings in \cref{sec:interleave}: an interleaving is exactly one of Lamport's sequential orders. Lamport also gives two requirements that a machine of his time could meet to be sequentially consistent. The first is that each processor issues its memory requests in the order of its program. A store buffer breaks this requirement on purpose, because it lets a later read go to memory before an earlier write has arrived there. That one observation is the starting point of \cref{ch:storebuf}.
 
 \subsection{Owens, Sarkar and Sewell, 2009: what x86 actually does}
 \label{sec:owens}
 
 Processor manuals describe memory ordering in English, and the English has been read in different ways. Owens, Sarkar and Sewell\cite{owens2009} wrote down a precise model of x86 multiprocessors, called x86-TSO, which agrees with the examples in the processor vendors' manuals. They give the model in two equivalent forms. One is an abstract machine in which every hardware thread has a FIFO store buffer in front of a shared memory. The other is a set of rules about the orders that are allowed.
 
-\paragraph{What we took.} We took three things. The first is the abstract machine itself: a read first looks in its own thread's buffer for the newest write to the same address and otherwise reads memory, buffered writes drain to memory oldest first, and \code{mfence} waits until the buffer is empty. Our store-buffer simulation in \cref{sec:sim} is built on exactly this picture. The second is the store-buffering test, which the paper uses as its first example of x86 behaviour that SC forbids, and which is the central test of our paper. The third is the support for our claim that x86 keeps every program-order pair except a write followed by a read, which is how we define TSO in \cref{sec:tso}.
+\paragraph{What we took.} We took three things. The first is the abstract machine itself: a read first looks in its own thread's buffer for the newest write to the same address and otherwise reads memory, buffered writes drain to memory oldest first, and \code{mfence} waits until the buffer is empty. Our store-buffer simulation in \cref{sec:sim} is built on exactly this picture. The second is the store-buffering test, which the paper uses as its first example of x86 behaviour that SC forbids, and which is the central test of our paper. The third is the support for our claim that x86 keeps every program-order pair except a write followed by a read, which is how we define \gls{tso} in \cref{sec:tso}.
 
 \subsection{Alglave, Maranget and Tautschnig, 2014: arrows and cycles}
 \label{sec:alglave}
 
-Alglave, Maranget and Tautschnig\cite{alglave2014} describe many memory models in one common language. An execution is a set of events joined by a few relations, among them program order, reads-from, coherence order and from-read. A model is then a short list of conditions saying that certain unions of these relations must not contain a cycle.
+Alglave, Maranget and Tautschnig\cite{alglave2014} describe many memory models in one common language. An execution is a set of events joined by a few relations, among them program order, \gls{rf}, \gls{co} and \gls{fr}. A model is then a short list of conditions saying that certain unions of these relations must not contain a cycle.
 
-\paragraph{What we took.} This is the mathematical engine of our \cref{ch:math} and of our checker. From this paper we took the four relations \po, \rf, \co\ and \fr, with \fr\ defined from the other two; the condition that the union of these relations must be acyclic; the idea that a weaker model keeps only part of program order, the \emph{preserved} program order; the split of reads-from into an internal part, inside one thread, and an external part, between threads; and the separate rule that accesses to a single address always behave as if sequentially consistent, which we call SC per location (\cref{sec:scloc}). The paper covers much more than this, including models of ARM and POWER processors and a family of software tools, and we used none of that.
+\paragraph{What we took.} This is the mathematical engine of our \cref{ch:math} and of our checker. From this paper we took the four relations \po, \rf, \co\ and \fr, with \fr\ defined from the other two; the condition that the union of these relations must be acyclic; the idea that a weaker model keeps only part of program order, the \emph{preserved} program order; the split of reads-from into an internal part, inside one thread, and an external part, between threads; and the separate rule that accesses to a single address always behave as if sequentially consistent, which we call \gls{scl} (\cref{sec:scloc}). The paper covers much more than this, including models of ARM and POWER processors and a family of software tools, and we used none of that.
 
-\paragraph{Where to find the papers.} All the papers we referred to while writing this report are saved in our Zotero library. The link to the library is given in our GitHub repository, \repourl.
+\paragraph{Where to find the papers.} All the books and papers we cited in this report are listed in the file \code{papers.bib} in our GitHub repository, \repourl.
 
 \section{What we chose to leave out}
 
-The books and papers above discuss several weaker models and many more litmus tests than we use. We kept to three models, SC, TSO and PSO, and to two litmus tests with their fenced versions, because that is enough to answer our three questions and small enough that every result can be checked by hand. \Cref{ch:conclusion} lists the larger topics we leave for future work.
+The books and papers above discuss several weaker models and many more \gls{litmus}s than we use. We kept to three models, SC, TSO and \gls{pso}, and to two litmus tests with their fenced versions, because that is enough to answer our three questions and small enough that every result can be checked by hand. \Cref{ch:conclusion} lists the larger topics we leave for future work.
 
 % =====================================================================
 \chapter{Memory and the Store Buffer}
 \label{ch:storebuf}
 % =====================================================================
 
-This chapter introduces one structure inside the core, the store buffer, and shows why a single core never notices it. Everything surprising in the rest of the paper comes from this one structure.
+This chapter introduces one structure inside the core, the \gls{sb}, and shows why a single core never notices it. Everything surprising in the rest of the paper comes from this one structure.
 
 \section{The idea}
 \label{sec:sbidea}
@@ -613,16 +611,16 @@ The buffer drains into the L1 cache, not straight into main memory. Once the ent
 \label{fig:sbpath}
 \end{figure}
 
-This is a large saving of time, and \cref{ch:cost} puts a number on it with a small model. It is also the root of the whole problem. After a store has left the core and entered the buffer, other cores cannot see it until the buffer drains. The store is finished as far as its own core is concerned, and it does not yet exist for everybody else.
+This is a large saving of time, and \cref{ch:cost} puts a number on it with a small model. This is also the source of the problem. After a store has left the core and entered the buffer, other cores cannot see it until the buffer drains. The store is finished as far as its own core is concerned, and it does not yet exist for everybody else.
 
-Lamport's first requirement for sequential consistency, from \cref{sec:lamport}, was that each processor sends its memory requests in program order\cite{lamport1979}. A store buffer lets a later load reach memory before an earlier store does, so a machine with a store buffer gives up that requirement. Whether the program can tell is the question of the next two chapters.
+Lamport's first requirement for sequential consistency, from \cref{sec:lamport}, was that each processor sends its memory requests in \gls{po}\cite{lamport1979}. A store buffer lets a later load reach memory before an earlier store does, so a machine with a store buffer gives up that requirement. Whether the program can tell is the question of the next two chapters.
 
 \section{Store-to-load forwarding}
 \label{sec:forwarding}
 
 We start with a core that stores \code{x = 1} and then at once loads \code{x}. The new value is still in the store buffer and has not reached the cache. If the load simply read the cache it would get the old value, and the \emph{uniprocessor illusion}\index{uniprocessor illusion} would break. This is the rule that on a single core the result must be the same as if the program had run one instruction at a time, in order.
 
-So every load first searches the store buffer. This is called \emph{store-to-load forwarding}\index{store-to-load forwarding}, and it happens in the load-store queue of the core. \Cref{fig:forwarding} shows the circuit. There is one comparator for each buffer entry, which checks whether that entry's address equals the load's address. Several entries may match if the core wrote the same address more than once, and then a priority selector picks the youngest of the stores that come before the load. A multiplexer sends that entry's data to the load. If no entry matches, the load reads the cache.
+So every load first searches the store buffer. This is called \emph{\gls{fwd}}\index{store-to-load forwarding}, and it happens in the load-store queue of the core. \Cref{fig:forwarding} shows the circuit. There is one comparator for each buffer entry, which checks whether that entry's address equals the load's address. Several entries may match if the core wrote the same address more than once, and then a priority selector picks the youngest of the stores that come before the load. A multiplexer sends that entry's data to the load. If no entry matches, the load reads the cache.
 
 \begin{figure}[!htbp]
 \centering
@@ -660,7 +658,7 @@ So every load first searches the store buffer. This is called \emph{store-to-loa
 \label{fig:forwarding}
 \end{figure}
 
-Forwarding gives us the \emph{uniprocessor rule}: a load returns the value of the most recent earlier store to the same address in its own thread, if there is one. Every model in this paper obeys this rule. (This is the single-thread part of \emph{SC per location}, \cref{sec:scloc}: if each address is checked on its own, a thread's own reads and writes of that address must never form a cycle. Forwarding is the hardware that keeps this true. SC per location also asks that all threads agree on one order of the writes to an address, and that part comes from cache coherence.)
+Forwarding gives us the \emph{uniprocessor rule}: a load returns the value of the most recent earlier store to the same address in its own thread, if there is one. Every model in this paper obeys this rule. (This is the single-thread part of \emph{\gls{scl}}, \cref{sec:scloc}: if each address is checked on its own, a thread's own reads and writes of that address must never form a cycle. Forwarding is the hardware that keeps this true. \gls{sc} per location also asks that all threads agree on one order of the writes to an address, and that part comes from \gls{coh}.)
 
 \section{What this means for two cores}
 \label{sec:twocores}
@@ -701,7 +699,7 @@ Each core has its own private cache, so the same address can sit in several cach
   \item \textbf{Invalid (I):} this cache's copy is out of date and must not be used.
 \end{itemize}
 
-The one rule that matters to us: before a core writes a line, every other cache must mark its copy Invalid. Only then does the writer get the line in the Modified state. A core that later reads that address misses in its own cache, and receives the new value from the writer.
+The rule we need: before a core writes a line, every other cache must mark its copy Invalid. Only then does the writer get the line in the Modified state. A core that later reads that address misses in its own cache, and receives the new value from the writer.
 
 Coherence therefore guarantees that all cores see the writes to the \emph{same} address in one agreed order. It says nothing about the order between writes to \emph{different} addresses. It also cannot see inside a store buffer, because a buffered store has not reached the cache yet. So even a perfectly coherent machine can show the surprising result of \cref{sec:intro-sb}. That is all we need from MESI.
 
@@ -727,22 +725,22 @@ SC for one address does not mean SC for the whole program. Every surprise in thi
 \label{ch:litmus}
 % =====================================================================
 
-We now put two of our cores next to each other and let them share one memory. The aim of this chapter is threefold: to describe our three models in words, to introduce the litmus tests we will use, and to see which outputs each model allows and which it forbids for those tests.
+We now put two cores next to each other with one shared memory, describe the three models in words, and use two \gls{litmus}s to see what each model allows.
 
 \section{Operational Description of SC, TSO and PSO}
 \label{sec:models-words}
 
 Before the tests, here is how each of the three machines works in practice. Each one is a shared memory with two cores attached, and the only difference between them is what sits between a core and the memory.
 
-\paragraph{SC (sequential consistency).} There is no store buffer. When a core executes a store, the value goes straight into memory, and the very next load by any core sees it. Memory handles one operation at a time, and each core sends its operations in the order of its program. It behaves like a single shared notebook that the cores take turns writing in and reading from. This is the machine most people have in mind when they first write a parallel program, and it is the slowest, because a core must wait for memory on every store.
+\paragraph{SC (sequential consistency).} There is no \gls{sb}. When a core executes a store, the value goes straight into memory, and the very next load by any core sees it. Memory handles one operation at a time, and each core sends its operations in the order of its program. It behaves like a single shared notebook that the cores take turns writing in and reading from. This is the machine most people have in mind when they first write a parallel program, and it is the slowest, because a core must wait for memory on every store.
 
 \paragraph{TSO (total store order).} Each core has \emph{one} store buffer, a queue where its stores wait before going to memory. A store joins the back of the queue, and the stores leave from the front, so a core's stores always reach memory in the order it issued them. A load first looks in its own core's buffer (\cref{sec:forwarding}) and takes the newest value for that address if it finds one. Otherwise it reads memory. The effect is that a core can run a load while its own earlier store is still waiting in the queue, so another core may read the old value for a short time. This is how x86 processors work.
 
-\paragraph{PSO (partial store order).} Each core still has a store buffer, but it is looser. Stores to the \emph{same} address leave in the order they were issued, while stores to \emph{different} addresses may leave in any order. So a core that writes \code{x} and then \code{y} may find that \code{y} reaches memory first. A load still checks the core's own buffer first, as in TSO.
+\paragraph{PSO (partial store order).} Each core still has a store buffer, but it is looser. Stores to the \emph{same} address leave in the order they were issued, while stores to \emph{different} addresses may leave in any order. So a core that writes \code{x} and then \code{y} may find that \code{y} reaches memory first. A load still checks the core's own buffer first, as in \gls{tso}.
 
-Programmers who need more order at one particular point can add a fence instruction to their program. A full fence (\code{mfence}) makes the core wait until everything in its store buffer has reached memory before it goes on. A store fence (\code{stbar}) is lighter: it only makes sure that the stores written before it reach memory before the stores written after it.
+Programmers who need more order at one particular point can add a \gls{fence} instruction to their program. A full fence (\code{mfence}) makes the core wait until everything in its store buffer has reached memory before it goes on. A store fence (\code{stbar}) is lighter: it only makes sure that the stores written before it reach memory before the stores written after it.
 
-To summarise the three machines: SC has no buffer, TSO has a queue, and PSO has a queue that can reorder stores to different addresses. The next sections use two small tests to show the difference in behaviour.
+\gls{sc} has no buffer, TSO has a queue, and \gls{pso} has a queue that can reorder stores to different addresses.
 
 \section{Litmus tests}
 \label{sec:notation}
@@ -849,11 +847,9 @@ MP \outc{1}{0} & forbidden & forbidden & allowed\\
 \label{ch:math}
 % =====================================================================
 
-\noindent In \cref{ch:litmus} we described SC, TSO and PSO in words, by what each machine actually does in hardware: whether it has a store buffer, how that buffer drains, and what a core can see. That description is easy to follow, but it is not precise enough to decide, for a given program and a given result, whether the result is allowed. For that we need to say exactly what each model permits.
+\noindent The description of \cref{ch:litmus} is easy to follow, but it is not precise enough to decide whether a given result is allowed. For that we need to say what each model permits.
 
-\noindent In this chapter we formalise the three models. We first define a small set of mathematical objects: the memory operations of a program, and a few relations between them. Then we state, for each model, the rules that a result must satisfy to be allowed. From these rules we build one method that works for every model and every test. We draw the operations as points.
-
-\noindent We work through four cases by hand, each with its own graph, and give the verdict of each one straight away. The same method is then run by programs in \cref{ch:checker,ch:hw}.
+\noindent We define the memory operations of a program and a few relations between them, state the rules a result must satisfy under each model, and draw the operations as points. We then work through four cases by hand, each with its own graph and its verdict. The same method is run by a program in \cref{ch:checker}.
 
 \section{Events}
 \label{sec:events}
@@ -877,7 +873,7 @@ An \emph{execution}\index{execution} is one choice of \rf\ and \co: one story of
 \section{Acyclic means consistent}
 \label{sec:acyclic}
 
-The four relations above are the raw material. Each model uses them in a slightly modified form: it decides which of the arrows are kept, and in some cases in what shape. For example, a weaker model keeps only some of the program-order arrows (we will call these the preserved program order, \ppo), and it counts a reads-from arrow only when the value really travels between two different cores (the external reads-from, \rfe). The exact versions for each model are defined later in this chapter. Here we only need the method that is the same for all of them.
+The four relations above are the raw material. Each model uses them in a slightly modified form: it decides which of the arrows are kept, and in some cases in what shape. For example, a weaker model keeps only some of the program-order arrows (we will call these the \gls{ppo}, \ppo), and it counts a \gls{rf} arrow only when the value really travels between two different cores (the external reads-from, \rfe). The exact versions for each model are defined later in this chapter. Here we only need the method that is the same for all of them.
 
 For a given program and a given result, we draw all the arrows that the model keeps as one directed graph. We read an arrow $A \to B$ as the statement that $A$ must happen before $B$. Then we look at the graph:
 \begin{itemize}
@@ -935,7 +931,7 @@ Reading the table from left to right, each step drops one more kind of arrow.
 \subsection{Fences}
 \label{sec:fencedef}
 
-A \emph{fence}\index{fence} is an instruction that says that the memory operations of this thread before it must be ordered before the ones after it. In the graph, a fence adds back the dropped arrows between operations on either side of it. Different fences put back different pairs (\cref{tab:fences}).
+A \emph{\gls{fence}}\index{fence} is an instruction that says that the memory operations of this thread before it must be ordered before the ones after it. In the graph, a fence adds back the dropped arrows between operations on either side of it. Different fences put back different pairs (\cref{tab:fences}).
 
 \begin{table}[!htbp]
 \centering\small
@@ -954,7 +950,7 @@ store-store fence (SPARC \code{stbar}) & \WW\ only & the writer side of MP under
 \subsection{The rules}
 
 \begin{notebox}
-\textbf{SC.} Every program-order pair is kept. SC allows an execution if and only if the graph $\po \cup \rf \cup \co \cup \fr$ has no cycle.
+\textbf{SC.} Every program-order pair is kept. \gls{sc} allows an execution if and only if the graph $\po \cup \rf \cup \co \cup \fr$ has no cycle.
 \end{notebox}
 
 \begin{notebox}
@@ -963,15 +959,15 @@ store-store fence (SPARC \code{stbar}) & \WW\ only & the writer side of MP under
 \item the graph $\ppo \cup \text{fences} \cup \rfe \cup \co \cup \fr$ has no cycle, and
 \item the graph $\poloc \cup \rf \cup \co \cup \fr$ has no cycle.
 \end{enumerate}
-For TSO, \ppo\ contains \RR, \RW\ and \WW. For PSO, \ppo\ contains only \RR\ and \RW.
+For \gls{tso}, \ppo\ contains \RR, \RW\ and \WW. For \gls{pso}, \ppo\ contains only \RR\ and \RW.
 \end{notebox}
 
-The symbol $\cup$ just means that we put all these arrows into the same graph. The two conditions have different jobs. Condition (i) looks at all addresses together, and it uses only the program-order arrows that the model keeps. Condition (ii) looks at each address on its own, and it is the SC per location rule of \cref{sec:scloc}, which is the same in every model.
+The symbol $\cup$ just means that we put all these arrows into the same graph. The two conditions have different jobs. Condition (i) looks at all addresses together, and it uses only the program-order arrows that the model keeps. Condition (ii) looks at each address on its own, and it is the \gls{scl} rule of \cref{sec:scloc}, which is the same in every model.
 
 \section{The Store Buffering test (SB)}
 \label{sec:sbgraph}
 
-We now take the two litmus tests one by one and build their graphs under each model. The first is SB (\cref{sec:sb}), with the outcome \outc{0}{0}. Every operation becomes a circle, and the letter inside it is the name of the operation:
+We now take the two \gls{litmus}s one by one and build their graphs under each model. The first is SB (\cref{sec:sb}), with the outcome \outc{0}{0}. Every operation becomes a circle, and the letter inside it is the name of the operation:
 \begin{itemize}
 \item[\textbf{a}] $W(x,1)$: T0 writes 1 to \code{x}.
 \item[\textbf{b}] $R(y,0)$: T0 reads \code{y} and gets 0.
@@ -985,7 +981,7 @@ The result fixes all the arrows except the program-order ones, which depend on t
 \subsection{SB under SC}
 \label{sec:sbsc}
 
-SC keeps both program-order arrows, $a \to b$ and $c \to d$. We add the arrows in four steps (\cref{fig:sbsc}): first all the program-order arrows, then the reads-from arrows, then the coherence arrows, and finally the from-read arrows.
+SC keeps both program-order arrows, $a \to b$ and $c \to d$. We add the arrows in four steps (\cref{fig:sbsc}): first all the program-order arrows, then the reads-from arrows, then the coherence arrows, and finally the \gls{fr} arrows.
 
 \begin{figure}[H]
 \centering
@@ -1186,7 +1182,7 @@ The method itself is mechanical. Every step is a clear rule: list the events, ad
 \label{ch:checker}
 % =====================================================================
 
-In \cref{ch:math} we reached our results by working through a few examples by hand, and we also want to verify these results empirically. For this we turn the same method into a program, the checker. It does exactly what \cref{ch:math} describes, only mechanically, and it handles every program in the same way. This chapter shows how the code is split into files, how each file works, what the checker prints, and how we check the checker itself, first with random programs and then with a second program that simulates the store buffers directly. All the programs are listed in full in \cref{app:code}.
+In \cref{ch:math} we reached our results by working through a few examples by hand, and we also want to verify these results empirically. For this we turn the same method into a program, the checker. It does what \cref{ch:math} describes, only mechanically. This chapter shows how the code is split into files, how each file works, what the checker prints, and how we check the checker itself, first with random programs and then with a second program that simulates the \gls{sb}s directly. All the programs are listed in full in \cref{app:code}.
 
 \section{The files}
 \label{sec:files}
@@ -1211,19 +1207,19 @@ File & What it contains\\
 \end{tabularx}
 \end{table}
 
-Running \code{python3 checker.py} prints the verdict for each litmus test, the candidate executions of SB and MP, and the result of the subset check on all 2005 programs. It takes about one second.
+Running \code{python3 checker.py} prints the verdict for each \gls{litmus}, the candidate executions of SB and MP, and the result of the subset check on all 2005 programs. It takes about one second.
 
 \section{The test programs: \texttt{tests.py}}
 \label{sec:testsfile}
 
 The file \code{tests.py} holds every program that we give to the checker. We first write a few tests by hand, and then we add 2000 random tests that were generated with the help of an LLM. The hand-written tests are small and we know their answers in advance, so they show that the checker agrees with \cref{ch:math}. The random tests are many and varied, so they check that the checker is right on programs that we did not think of ourselves.
 
-A program is a list of threads, and a thread is a list of instructions. For example, \code{("W", "x", 1)} is a write that writes the value 1 to the address \code{x}, \code{("R", "r0", "y")} is a read that reads the address \code{y} into the register \code{r0}, and \code{("F", "mfence")} is a fence. The other fence is \code{("F", "stbar")}.
+A program is a list of threads, and a thread is a list of instructions. For example, \code{("W", "x", 1)} is a write that writes the value 1 to the address \code{x}, \code{("R", "r0", "y")} is a read that reads the address \code{y} into the register \code{r0}, and \code{("F", "mfence")} is a \gls{fence}. The other fence is \code{("F", "stbar")}.
 
 \paragraph{Five hand-written litmus tests.} These are SB, SB with \code{mfence} in both threads, MP, MP with \code{stbar} in the writer, and OwnWrite, the single-thread test of \cref{sec:scloc}. They are stored in the dictionary \code{LITMUS}. For each test the file keeps two more things.
 \begin{itemize}
 \item \code{TARGET} is the outcome we ask about, for example both reads return 0 in SB.
-\item \code{EXPECTED} is the answer we expect for SC, TSO and PSO, written as three letters, where \code{A} means allowed and \code{F} means forbidden.
+\item \code{EXPECTED} is the answer we expect for \gls{sc}, \gls{tso} and \gls{pso}, written as three letters, where \code{A} means allowed and \code{F} means forbidden.
 \end{itemize}
 The expected answers are the predictions of \cref{ch:math}. We wrote them down before running the checker.
 
@@ -1290,41 +1286,31 @@ The set of kept pairs is written with two letters for each pair, the kind of the
 \section{The three models: \texttt{sc.py}, \texttt{tso.py}, \texttt{pso.py}}
 \label{sec:modeltable}
 
-Each model file has one function, \code{graphs}. It takes the events, the fences and one guess of an execution (its reads-from, \rf, and its coherence order, \co), and it returns the list of graphs that must all have no cycle. The function is the rule of \cref{sec:rules}, written in Python. For SC the rule is one graph, with every program-order arrow in it.
+Each model file has one function, \code{graphs}. It takes the events, the fences and one guess of an execution (its \gls{rf}, \rf, and its \gls{co}, \co), and it returns the list of graphs that must all have no cycle. The function is the rule of \cref{sec:rules}, written in Python. For SC the rule is one graph, with every program-order arrow in it.
 
 \begin{figure}[!htbp]
 \centering
 \begin{lstlisting}[style=vspython]
-"""sc.py -- SC: every program-order pair is kept.
-
-graphs(...) returns the list of graphs that must have no loop.
-For SC there is just one: program order, reads-from, write order, from-read.
-(Fences change nothing, because SC already keeps every pair in order.)
-"""
+"""SC keeps every program-order pair."""
 from graph import program_order, from_read_arrows
 
 
 def graphs(events, fences, reads_from, write_order):
     arrows = (program_order(events) + reads_from + write_order
               + from_read_arrows(reads_from, write_order))
+    
     return [arrows]
 \end{lstlisting}
 \caption{The model file \code{sc.py}.}
 \label{fig:sccode}
 \end{figure}
 
-For TSO and PSO the rule has two graphs: the global graph, with the preserved program order, the fence arrows and only the external reads-from, and the graph of one address at a time. The two files are the same except for the set of pairs they keep.
+For TSO and PSO the rule has two graphs: the global graph, with the \gls{ppo}, the fence arrows and only the external reads-from, and the graph of one address at a time. The two files are the same except for the set of pairs they keep.
 
 \begin{figure}[!htbp]
 \centering
 \begin{lstlisting}[style=vspython]
-"""tso.py -- TSO: drops W then R (the store buffer).
-
-graphs(...) returns the two graphs that must both have no loop:
-  1. the global graph: the program order TSO keeps, the arrows of fences,
-     reads-from between different threads, write order, from-read;
-  2. the same-address graph, which every model needs.
-"""
+"""TSO relaxes W -> R because of the store buffer."""
 from graph import (preserved_program_order, fence_arrows, external_reads_from,
                    from_read_arrows, same_address_arrows)
 
@@ -1337,6 +1323,7 @@ def graphs(events, fences, reads_from, write_order):
                      + external_reads_from(reads_from)
                      + write_order
                      + from_read_arrows(reads_from, write_order))
+    
     return [global_arrows, same_address_arrows(events, reads_from, write_order)]
 \end{lstlisting}
 \caption{The model file \code{tso.py}. The file \code{pso.py} is the same, with \code{KEPT = \{"RR", "RW"\}}.}
@@ -1379,15 +1366,13 @@ Step & What happens & Function\\
 \centering
 \begin{lstlisting}[style=vspython]
 def check(test, model):
-    """Return the set of allowed outcomes of `test` under a model (sc, tso or pso).
-
-    An outcome is (register values, final memory values).
-    """
-    events, fences, variables = make_events(test)
+    events, fences, var_list = make_events(test)
     allowed = set()
-    for guess in all_guesses(events, variables):
+
+    for guess in all_guesses(events, var_list):
         if guess_is_possible(events, fences, model, guess):
             allowed.add(outcome_of(guess))
+
     return allowed
 \end{lstlisting}
 \caption{The function \code{check} of \code{checker.py}.}
@@ -1504,7 +1489,7 @@ TSO allows strictly fewer outcomes than PSO & 55\\
 \begin{figure}[!htbp]
 \centering
 \begin{lstlisting}[style=vscode]
-test         outcome       SC TSO PSO   as expected?
+test outcome SC TSO PSO as expected?
 SB           (0, 0)         F   A   A   yes
 SB+mfences   (0, 0)         F   F   F   yes
 MP           (1, 0)         F   F   A   yes
@@ -1621,6 +1606,17 @@ Machine and checker agree everywhere: yes
 \label{fig:sbout}
 \end{figure}
 
+\section{How our approach developed}
+\label{sec:q1history}
+
+Our first idea was the simple one: write each model as a single rule on \gls{po} and check it by hand on the litmus tests. A hand check does not scale, so we wrote the rules as a program that tries every possible execution.
+
+The one-graph idea did not survive for TSO and PSO. A single graph with all the preserved program-order arrows is right for SC, but for TSO and PSO it is not enough. A program that reads its own write, such as the OwnWrite test, shows this: we needed a second graph for one address at a time, and the global graph must leave out the reads-from arrows that stay inside a thread. Adding that second graph fixed the results.
+
+Trust was the next issue. A checker that agrees with the answers we expect could still be wrong in a way we did not expect. So we wrote a separate store-buffer simulation and compared it with the checker on the 15 test and model pairs and on 2000 random programs, and the two never differed.
+
+Last, we reorganised the code. We moved the graph building into \code{graph.py} and gave each model its own short file, so that each rule can be read next to its definition in \cref{ch:math}.
+
 \section{Answer to Q1}
 \label{sec:q1}
 
@@ -1634,7 +1630,7 @@ Every outcome allowed by SC is allowed by TSO, and every outcome allowed by TSO 
 \label{ch:hw}
 % =====================================================================
 
-The checker of \cref{ch:checker} says what each model allows. This chapter asks what a real x86-64 processor actually does. We wrote a short C program that runs the litmus tests on two cores, millions of times, and counts every outcome. The program is listed in \cref{app:code}.
+The checker of \cref{ch:checker} says what each model allows. This chapter asks what a real x86-64 processor actually does. We wrote a short C program that runs the \gls{litmus}s on two cores, millions of times, and counts every outcome. The program is listed in \cref{app:code}.
 
 \section{What the program does}
 \label{sec:harness}
@@ -1647,9 +1643,9 @@ The program starts two threads and pins each one to its own core. Then, in each 
 \end{enumerate}
 One run repeats this one million times and prints how often each of the four outcomes appeared. We ran three tests.
 \begin{itemize}
-\item \textbf{SB}, exactly as in \cref{sec:sb}.
+\item \textbf{SB}, as in \cref{sec:sb}.
 \item \textbf{SB+mfence}, with an \code{mfence} instruction between the write and the read in both threads.
-\item \textbf{MP}, exactly as in \cref{sec:mp}.
+\item \textbf{MP}, as in \cref{sec:mp}.
 \end{itemize}
 
 \section{Things that can quietly spoil the experiment}
@@ -1657,9 +1653,9 @@ One run repeats this one million times and prints how often each of the four out
 
 Four details decide whether the experiment measures the hardware or something else.
 
-\paragraph{The compiler also reorders.} A C compiler is allowed to swap a store and a load to different variables before the hardware ever sees them, and that would make the result meaningless. We wrote every shared access with C11 atomics using \code{memory\_order\_relaxed}. These stop the compiler from merging or reordering the accesses, and on x86-64 they compile to a plain \code{mov} with no fence. We then read the machine code with \code{objdump -d} to confirm that each store really comes before its load (\cref{sec:asm}).
+\paragraph{The compiler also reorders.} A C compiler is allowed to swap a store and a load to different variables before the hardware ever sees them, and that would make the result meaningless. We wrote every shared access with C11 atomics using \code{memory\_order\_relaxed}. These stop the compiler from merging or reordering the accesses, and on x86-64 they compile to a plain \code{mov} with no \gls{fence}. We then read the machine code with \code{objdump -d} to confirm that each store really comes before its load (\cref{sec:asm}).
 
-\paragraph{The threads must run on different cores.} We pin T0 to CPU 0 and T1 to CPU 1 with \code{pthread\_setaffinity\_np}. On one core there is one store buffer, and the core always sees its own buffered stores through forwarding, so the effect could not appear.
+\paragraph{The threads must run on different cores.} We pin T0 to CPU 0 and T1 to CPU 1 with \code{pthread\_setaffinity\_np}. On one core there is one \gls{sb}, and the core always sees its own buffered stores through forwarding, so the effect could not appear.
 
 \paragraph{Each variable needs its own cache line.} If \code{x} and \code{y} shared a 64-byte cache line, the coherence protocol would move them together and we would be measuring that instead. Each shared variable in our program is padded to its own 64-byte line.
 
@@ -1693,7 +1689,7 @@ Runs per configuration & 10\\
 \section{Checking the machine code}
 \label{sec:asm}
 
-\Cref{lst:disasm} is the output of \code{objdump -d} for the test bodies, trimmed to the instructions that matter. In SB, each thread stores with \code{movl} and then loads with \code{mov}, in program order, with nothing in between. In SB+mfence the \code{mfence} sits between them. In MP the two stores and the two loads are each in program order. So whatever reordering we see comes from the hardware and not from the compiler.
+\Cref{lst:disasm} is the output of \code{objdump -d} for the test bodies, trimmed to the instructions that matter. In SB, each thread stores with \code{movl} and then loads with \code{mov}, in \gls{po}, with nothing in between. In SB+mfence the \code{mfence} sits between them. In MP the two stores and the two loads are each in program order. So whatever reordering we see comes from the hardware and not from the compiler.
 
 \begin{lstlisting}[language=asmx, caption={Machine code of the test bodies, from \texttt{objdump -d} (GCC 13.3.0, \texttt{-O2}).}, label={lst:disasm}, captionpos=b]
 <t0_sb>:          movl   $0x1, X        # a: x = 1
@@ -1719,7 +1715,7 @@ For each configuration we did $n = 10$ runs. In run $i$ we count $k_i$, the numb
 \item The \textbf{mean} $\bar{k} = \frac{1}{n}\sum_i k_i$ and the sample \textbf{standard deviation} $s = \sqrt{\sum_i (k_i - \bar{k})^2 / (n-1)}$, for completeness.
 \end{itemize}
 
-\paragraph{When the count is zero.} Seeing an outcome zero times in $N$ tries does not prove that it is impossible. The \emph{rule of three}\index{rule of three} gives a simple bound: if an event never occurs in $N$ independent tries, then with 95\% confidence its true probability is below about $3/N$. The rule comes from solving $(1-p)^N = 0.05$, which gives $p \approx -\ln(0.05)/N \approx 3/N$. Over our ten runs $N = 10^7$, so a zero count tells us the probability is below about $3 \times 10^{-7}$. Only the checker can prove that an outcome is impossible. The measurement shows what this particular machine does.
+\paragraph{When the count is zero.} Seeing an outcome zero times in $N$ tries does not prove that it is impossible. The \emph{\gls{rot}}\index{rule of three} gives a simple bound: if an event never occurs in $N$ independent tries, then with 95\% confidence its true probability is below about $3/N$. The rule comes from solving $(1-p)^N = 0.05$, which gives $p \approx -\ln(0.05)/N \approx 3/N$. Over our ten runs $N = 10^7$, so a zero count tells us the probability is below about $3 \times 10^{-7}$. Only the checker can prove that an outcome is impossible. The measurement shows what this particular machine does.
 
 \section{Results}
 \label{sec:hwres}
@@ -1741,7 +1737,7 @@ MP & \outc{1}{0} & 0 & 0 & 0 & 0 & forbidden\\
 \end{tabular}
 \end{table}
 
-The three lines tell one story. The outcome that SC forbids and TSO allows appeared about 36 thousand times per million, or roughly once in every 28 tries. With a full fence in each thread it disappeared completely: zero in ten million tries, which by the rule of three puts its probability below $3 \times 10^{-7}$. The MP outcome, which TSO forbids, never appeared either. Every hardware result agrees with what the checker says for TSO.
+The three lines tell one story. The outcome that \gls{sc} forbids and \gls{tso} allows appeared about 36 thousand times per million, or roughly once in every 28 tries. With a full fence in each thread it disappeared completely: zero in ten million tries, which by the rule of three puts its probability below $3 \times 10^{-7}$. The MP outcome, which TSO forbids, never appeared either. Every hardware result agrees with what the checker says for TSO.
 
 \Cref{tab:allout} shows all four outcomes, added up over the ten runs. Every outcome that SC allows appeared many times, so the threads really did overlap in all the ways the interleavings of \cref{tab:sbinter} describe. Only the outcomes that TSO forbids are missing.
 
@@ -1809,7 +1805,16 @@ The spread between runs is large, especially at skew 10, where one run gave more
 
 \section{What the machine cannot show}
 
-An x86-64 processor is TSO, so it never shows MP \outc{1}{0}, and our zero count is exactly what TSO predicts. It cannot show PSO at all, and we do not claim that it confirms PSO. Our experiment also cannot show SC, because no mainstream processor offers SC, which is the subject of \cref{ch:cost}.
+An x86-64 processor is TSO, so it never shows MP \outc{1}{0}, and our zero count is exactly what TSO predicts. It cannot show \gls{pso} at all, and we do not claim that it confirms PSO. Our experiment also cannot show SC, because no mainstream processor offers SC, which is the subject of \cref{ch:cost}.
+
+\section{How our approach developed}
+\label{sec:q2history}
+
+Our first idea was simple: run the SB test on a real machine many times and look for the outcome $(0,0)$ that SC forbids. A first program of this kind can give a wrong answer for reasons that have nothing to do with the store buffer, so most of the work went into making the test measure the hardware.
+
+The compiler was the first thing to deal with, since it may swap a store and a load before the hardware sees them. We fixed this with relaxed atomics and then read the machine code to confirm the order (\cref{sec:asm}). The second was the placement of the threads and the data: the two threads are pinned to different cores, and each variable has its own cache line, so that the coherence protocol does not decide the result.
+
+The results then changed the plan. The count of $(0,0)$ depends strongly on how closely the two threads start together, so we made the skew a parameter and measured it (\cref{sec:skew}). This turned a side detail into an extra result of the experiment.
 
 \section{Answer to Q2}
 \label{sec:q2}
@@ -1823,7 +1828,7 @@ On an x86-64 machine, SB \outc{0}{0}, which SC forbids, appeared 381{,}311 times
 \label{ch:cost}
 % =====================================================================
 
-Q3 asks why machines are built the way they are: what does strong ordering cost, and why do processors still not offer sequential consistency? We answer it in two steps. First we measure what the store buffer saves, using a small cost model. Then we ask whether that cost can be avoided in another way, and why SC is still not shipped. All the numbers in this chapter come from our model, not from a real processor.
+Q3 asks what strong ordering costs and why processors still do not offer sequential consistency. We answer it in two steps. First we measure what the \gls{sb} saves, using a small cost model. Then we ask whether that cost can be avoided in another way, and why \gls{sc} is still not shipped. All the numbers in this chapter come from our model, not from a real processor.
 
 \section{The cost of waiting for every store}
 \label{sec:boe}
@@ -1849,7 +1854,7 @@ Fraction of stores $f$ & $L = 4$ (cache hit) & $L = 100$ & $L = 300$ (main memor
 \end{tabular}
 \end{table}
 
-This gap is the reason store buffers exist, and so the reason TSO exists.
+This gap is the reason store buffers exist, and so the reason \gls{tso} exists.
 
 \section{When the buffer fills up}
 \label{sec:buffervsfull}
@@ -1901,20 +1906,20 @@ We compare two designs. The \emph{stall} design is the strict SC machine, where 
 \item At the end, the CPI is \code{cycle} divided by $N$.
 \end{itemize}
 
-The heart of the buffer design is these few lines.
+The buffer design is these few lines.
 
 \begin{figure}[!htbp]
 \centering
 \begin{lstlisting}[style=vspython]
 for _ in range(N):
-    cycle += 1                                    # issue this instruction
-    buffer = [t for t in buffer if t > cycle]     # drop finished stores
-    if rng.random() < f:                          # this one is a store
-        if len(buffer) == B:                      # full: wait for the oldest
+    cycle += 1
+    buffer = [t for t in buffer if t > cycle]     # remove completed stores
+    if rng.random() < f:
+        if len(buffer) == B:                      # wait for the oldest store
             cycle = buffer[0]
             buffer.pop(0)
         lat = l_miss if rng.random() < m else l_hit
-        start = max(cycle, busy_until)            # one store at a time, FIFO
+        start = max(cycle, busy_until)            # FIFO order
         busy_until = start + lat
         buffer.append(busy_until)
 return cycle / N
@@ -1990,11 +1995,11 @@ The buffer still helps, bringing the CPI from 3.701 down to about 2.7, but now t
 
 A store buffer hides the delay of memory, and it does not make memory faster. Memory still finishes one store at a time, and each store takes the same number of cycles. The buffer only lets the core do other work in the meantime. When stores arrive slowly enough for memory to keep up, which is the common case, the buffer hides almost all of the delay. When they arrive faster, the buffer stays full and a larger one cannot help.
 
-In our model waiting for every store gives a CPI of 1.873, and a buffer of 56 entries brings it to 1.011. The FIFO buffer of the model is the one that makes a machine TSO: a store waits in the buffer while later loads go ahead, so the write-then-read order is the one that gets dropped. This gap is the reason TSO exists. The results show the size of the effect and why it happens, but they are not the performance of a real processor.
+The FIFO buffer of the model is the one that makes a machine TSO: a store waits in the buffer while later loads go ahead, so the write-then-read order is the one that gets dropped. This gap is the reason TSO exists. The results show the size of the effect and why it happens, but they are not the performance of a real processor.
 
 The next question is whether a machine can avoid this cost and still give SC. We look at one such idea, speculation, and then at why processors do not offer SC even so.
 
-\section{Speculation, in plain words}
+\section{Speculation}
 \label{sec:spec}
 
 The model says that a core that waits for every store pays a large price. Modern cores have a way to avoid waiting without giving up SC: they can guess, check, and undo. The second book describes the hardware for this, load speculation in \S5.1 and replay in \S5.2, built on the checkpoints of \S4.4.4\cite{sarangiNextGen}. Applied to memory ordering, the idea works as follows (\cref{fig:spec}).
@@ -2025,7 +2030,7 @@ With this, a core can look sequentially consistent from outside and still run at
 \section{Four reasons SC is still not demanded}
 \label{sec:fourreasons}
 
-If speculation can make SC nearly as fast as TSO, why does no mainstream processor offer it? We weighed four explanations (\cref{tab:reasons}).
+Even if speculation makes SC nearly as fast as TSO, no mainstream processor offers it. We weighed four explanations (\cref{tab:reasons}).
 
 \begin{table}[!htbp]
 \centering\small
@@ -2043,14 +2048,25 @@ Reason & What it says & What our work shows\\
 \end{tabularx}
 \end{table}
 
-\paragraph{What DRF-SC says.}\label{par:drf}\index{DRF-SC}\index{data race} Most programmers never write a fence. They use locks and atomic variables, and their programs still behave as if the machine were SC. The reason is a simple rule. A \emph{data race} happens when two threads use the same variable at the same time, at least one of them writes, and no lock or atomic operation orders the two accesses. The rule, called \emph{DRF-SC}, says that a program with no data races behaves as if the machine were SC, whatever the hardware does underneath. The fences are already inside the lock and atomic operations, put there by the people who wrote the libraries and the compilers. Our litmus tests SB and MP have data races on purpose, which is why they can show results that SC forbids. If we protected \code{x} and \code{y} with a lock, we would never see \outc{0}{0}.
+\paragraph{What DRF-SC says.}\label{par:drf}\index{DRF-SC}\index{data race} Most programmers never write a \gls{fence}. They use locks and atomic variables, and their programs still behave as if the machine were SC. The reason is a simple rule. A \emph{data race} happens when two threads use the same variable at the same time, at least one of them writes, and no lock or atomic operation orders the two accesses. The rule, called \emph{\gls{drfsc}}, says that a program with no data races behaves as if the machine were SC, whatever the hardware does underneath. The fences are already inside the lock and atomic operations, put there by the people who wrote the libraries and the compilers. Our \gls{litmus}s SB and MP have data races on purpose, which is why they can show results that SC forbids. If we protected \code{x} and \code{y} with a lock, we would never see \outc{0}{0}.
 
 \paragraph{Which reason we find most convincing.} We find reason 3 the most convincing, with reason 1 as its partner. The SB outcome is real, as \cref{ch:hw} showed, but it reaches a programmer only when the program has a data race. Programs that use locks and atomics properly already get SC behaviour through the DRF-SC contract, and the cost of that contract on x86 is small and paid only at the few places that need it. On x86 only a write followed by a read can be reordered, so only the strongest atomic store needs an extra instruction, and every other access is an ordinary move. Since software already gets SC where it asks for it, there is little demand for hardware that gives SC everywhere. Reason 1 then explains why the situation does not change: the software that exists was written for TSO or weaker, so a stronger hardware model would help little of it. Reasons 2 and 4 are real costs, but they would matter only if there were demand to pay them.
 
 \section{Why go weaker than TSO at all?}
 \label{sec:weaker}
 
-The same logic that produced the store buffer keeps going. Each arrow a model drops gives the hardware a new freedom. PSO drops \WW\ so that a store that hits the cache need not wait behind one that misses (\cref{sec:pso}). More freedom means more chances to overlap slow memory work with useful work. The price is paid by the programmer, who must now write fences, such as the store-store fence that MP needed under PSO in \cref{fig:mpfence}, or use locks and atomics so that DRF-SC places the fences for them. Choosing a point on the ladder is a trade between speed and how easy the machine is to reason about.
+The same logic that produced the store buffer keeps going. Each arrow a model drops gives the hardware a new freedom. \gls{pso} drops \WW\ so that a store that hits the cache need not wait behind one that misses (\cref{sec:pso}). More freedom means more chances to overlap slow memory work with useful work. The price is paid by the programmer, who must now write fences, such as the store-store fence that MP needed under PSO in \cref{fig:mpfence}, or use locks and atomics so that DRF-SC places the fences for them. Choosing a point on the ladder is a trade between speed and how easy the machine is to reason about.
+
+\section{How our approach developed}
+\label{sec:q3history}
+
+We started from the simple formula $1 + f\cdot L$ of \cref{sec:boe}, which shows that waiting for every store is slow. It has two gaps. It says nothing about the size of the buffer, and it treats every store as equally slow.
+
+Studying the buffer size was the first difficulty. We could not change the store buffer of our own laptops, and a real core hides memory delays in other ways too, so a measurement would not isolate the effect. We therefore wrote the cycle-by-cycle model of \cref{sec:cpimodel}.
+
+A claim in our first draft of this chapter was also wrong: that one buffer entry removes more than half of the waiting. When we checked it against the model output, the true figure was about 43\%, so we corrected the text.
+
+A second experiment then changed the picture. The first run suggested that a bigger buffer always helps, which is true only while stores arrive more slowly than memory can finish them. Raising the store and miss rates showed the other case, where the buffer size hardly matters (\cref{tab:cpi2}).
 
 \section{Answer to Q3}
 \label{sec:q3}
@@ -2066,21 +2082,21 @@ A core that waits for every store pays a large price: in our model, CPI 1.873 ag
 
 \section{What the paper shows}
 
-We began with a two-thread program whose result looks impossible and asked what the smallest hardware feature is that makes it possible. We found that a store buffer is enough on its own.
+We began with a two-thread program whose result looks impossible and asked what the smallest hardware feature is that makes it possible. We found that a \gls{sb} is enough on its own.
 
 \begin{itemize}
 \item \textbf{A store buffer is the smallest hardware feature that breaks SC.} SB \outc{0}{0} is the witness. The cycle argument explains it: the store buffer removes the write-then-read arrows, and the cycle in the SB graph disappears (\cref{sec:sbgraph}).
-\item \textbf{The models form a strict ladder (Q1).} SC sits inside TSO, which sits inside PSO. Removing arrows cannot create a cycle, the checker confirms the chain on 2005 programs, SB separates SC from TSO and MP separates TSO from PSO (\cref{sec:mpgraph}). An independent simulation of the store buffers agrees with the checker on every program we tried.
-\item \textbf{The machine shows it (Q2).} On an x86-64 machine, SB \outc{0}{0} appeared 381{,}311 times in ten million tries, while MP \outc{1}{0}, which TSO forbids, never appeared.
+\item \textbf{The models form a strict ladder (Q1).} \gls{sc} sits inside \gls{tso}, which sits inside \gls{pso}. Removing arrows cannot create a cycle, the checker confirms the chain on 2005 programs, SB separates SC from TSO and MP separates TSO from PSO (\cref{sec:mpgraph}). An independent simulation of the store buffers agrees with the checker on every program we tried.
+\item \textbf{The machine shows it (Q2).} On an x86-64 machine, SB \outc{0}{0} appeared in a few percent of the tries, while MP \outc{1}{0}, which TSO forbids, never appeared.
 \item \textbf{A fence puts the dropped arrows back.} With \code{mfence} in both threads the SB outcome disappeared on the machine, and the checker shows the cycle returning.
-\item \textbf{The store buffer exists because waiting for stores is expensive, and SC is not shipped because software does not ask for it (Q3).} In our model a 56-entry buffer brings the CPI from 1.873 down to 1.011. Speculation could give SC at nearly that speed, but data-race-free programs already see SC through DRF-SC, and existing software assumes TSO or weaker.
+\item \textbf{The store buffer exists because waiting for stores is expensive, and SC is not shipped because software does not ask for it (Q3).} In our model a large buffer removes almost all the waiting. Speculation could give SC at nearly that speed, but data-race-free programs already see SC through \gls{drfsc}, and existing software assumes TSO or weaker.
 \end{itemize}
 
 \section{Limits of this work}
 
 \begin{itemize}
 \item Only TSO was observed on hardware. PSO appears through the checker and the simulation only, as a teaching model.
-\item We studied two litmus tests and their fenced versions. They are enough for our questions, and many more exist.
+\item We studied two \gls{litmus}s and their fenced versions. They are enough for our questions, and many more exist.
 \item Our hardware runs used a cloud virtual machine with two virtual CPUs. The ordering rules are those of the Intel processor underneath, but the counts, especially their spread, depend on the machine and its load.
 \item A zero count is not a proof. Only the checker proves that an outcome is impossible; the hardware runs bound how rare it is.
 \item The cost numbers of \cref{ch:cost} come from a simple model, not from measurements of a real processor, and the argument about speculation is reasoned, not simulated.
@@ -2101,27 +2117,94 @@ The Turnitin similarity report for this paper is placed here. It is generated fr
 \chapter{Readability Indices}
 \label{app:read}
 
-The course asks for the readability indices reported by the page \url{https://www.analyzemywriting.com/readability_indices.html}. That page takes text pasted into a form. \Cref{tab:read} gives the values computed by our own script, \code{readability.py} (\cref{app:code}), from the prose of the main chapters, \cref{ch:intro} to \cref{ch:conclusion}, with equations, listings, tables, figures and citations removed. The script uses the published formula of each index and counts syllables by a simple rule, so each value may differ a little from the website's. The last column is for the value the website returns for the same text, which the authors enter before submission.
+\Cref{tab:read} gives the readability indices of the entire text of this paper, as reported by the page \url{https://www.analyzemywriting.com/readability_indices.html}. Each value is the grade level, the number of years of schooling a reader needs to follow the text easily. The script \code{readability.py} (\cref{app:code}) is also included with the code and measures the prose of the main chapters in the same way, but the values required by the course are the ones in the table.
 
 \begin{table}[h]
 \centering\small
-\caption{Readability indices of the main text (12{,}384 words, 754 sentences, 16.4 words per sentence, 1.36 syllables per word).}
+\caption{Readability indices of the entire text of the paper.}
 \label{tab:read}
-\begin{tabular}{@{}lrr@{}}
+\begin{tabular}{@{}lr@{}}
 \toprule
-Index & Our script & Website value\\
+Readability score (index) & Grade level of entire text\\
 \midrule
-Flesch reading ease & 74.7 & \\
-Flesch--Kincaid grade level & 6.9 & \\
-Gunning Fog index & 9.3 & \\
-SMOG index & 9.4 & \\
-Coleman--Liau index & 7.0 & \\
-Automated readability index & 6.5 & \\
+Gunning fog & 10.23\\
+Flesch--Kincaid & 7.75\\
+SMOG & 9.37\\
+Coleman--Liau & 8.38\\
+Automated readability & 8.87\\
+\midrule
+Average grade level & 8.92\\
+Median grade level & 8.87\\
 \bottomrule
 \end{tabular}
 \end{table}
 
-A grade level is the number of years of schooling a reader needs to follow the text easily. Our grade-based indices fall between about 7 and 10, the band of general adult reading, and a Flesch reading ease above 70 is described as fairly easy. This is what we aimed for: short sentences, about 16 words each, and everyday words wherever the subject allows. Most of the long words that remain are the vocabulary of the subject itself, such as consistency, coherence and multiprocessor, which the formulas count as hard however simply the sentence around them is built.
+The five grade levels lie between about 7.7 and 10.2, which is the band of general adult reading, and their average is 8.92.
+
+% =====================================================================
+\chapter{Weekly Schedule of the Work}
+\label{app:schedule}
+% =====================================================================
+
+\Cref{tab:schedule} lists the work done on this paper in each week from 30 August to 16 November. One week had no project work, and chapters were written while the experiments were still running.
+
+The Gantt chart in \cref{fig:gantt} shows the same schedule as bars.
+
+\begin{figure}[!htbp]
+\centering
+\begin{ganttchart}[
+  hgrid, vgrid={*{11}{draw=black!20}},
+  x unit=0.85cm, y unit title=0.6cm, y unit chart=0.55cm,
+  title height=1, bar height=0.6,
+  title/.append style={draw=black!40, fill=boxgrey},
+  bar/.append style={draw=black!70, thick},
+  bar label font=\footnotesize, title label font=\footnotesize,
+  include title in canvas=false]{1}{11}
+\gantttitle{Week}{11} \\
+\gantttitlelist{1,...,11}{1} \\
+\ganttbar[bar/.append style={fill=boxgrey}]{Topic, questions, scope}{1}{1} \\
+\ganttbar[bar/.append style={fill=boxgrey}]{Reading and notes}{2}{2} \\
+\ganttbar[bar/.append style={fill=boxblue}]{Background chapters}{2}{2} \ganttbar[bar/.append style={fill=boxblue}]{}{4}{4} \\
+\ganttbar[bar/.append style={fill=boxblue}]{Rules chapter (math)}{4}{5} \\
+\ganttbar[bar/.append style={fill=boxgreen}]{Q1: checker, tests, simulation}{5}{7} \\
+\ganttbar[bar/.append style={fill=boxgreen}]{Q1 chapter}{6}{7} \\
+\ganttbar[bar/.append style={fill=boxorange}]{Q2: C test and real runs}{6}{7} \\
+\ganttbar[bar/.append style={fill=boxorange}]{Q2 chapter}{8}{8} \\
+\ganttbar[bar/.append style={fill=boxpurple}]{Q3: cost model, experiments}{8}{9} \\
+\ganttbar[bar/.append style={fill=boxpurple}]{Q3 chapter}{9}{9} \\
+\ganttbar[bar/.append style={fill=boxgrey}]{Introduction and conclusion}{8}{9} \\
+\ganttbar[bar/.append style={fill=boxgrey}]{Full draft and advisor/TA review}{9}{9} \\
+\ganttbar[bar/.append style={fill=boxgrey}]{Number check, feedback, formatting}{10}{10} \\
+\ganttbar[bar/.append style={fill=boxgrey}]{Appendices, Turnitin, final build, upload}{11}{11}
+\end{ganttchart}
+\caption{Gantt chart of the work, drawn from \cref{tab:schedule}. Weeks run from 30 August (week 1) to 16 November (week 11). Week 3 had no project work. Blue marks the theory, green Q1, orange Q2, purple Q3 and grey the rest of the paper.}
+\label{fig:gantt}
+\end{figure}
+
+\begin{longtable}{@{}>{\raggedright}p{0.9cm}>{\raggedright}p{2.5cm}>{\raggedright}p{7.2cm}>{\raggedright\arraybackslash}p{4.2cm}@{}}
+\caption{The week-by-week schedule of the work.}\label{tab:schedule}\\
+\toprule
+Week & Dates & What was done & Output at the end of the week\\
+\midrule
+\endfirsthead
+\toprule
+Week & Dates & What was done & Output at the end of the week\\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+1 & 30 Aug -- 5 Sep & Chose the topic. Read the basics from the course book. Wrote down the 3 questions and fixed the scope (SC, TSO, PSO only). & One page: topic, 3 questions, scope \\
+2 & 6 -- 12 Sep & Read the main papers and took notes in plain words. Agreed on one notation (po, rf, co, fr). Started the hardware background: memory, store buffer, two cores. & Notes, shared .bib file, rough background \\
+3 & 13 -- 19 Sep & No project work. & None \\
+4 & 20 -- 26 Sep & Finished the background chapters. Worked out SB and MP by hand and started writing the rules of each model as math (program order, graphs, cycles). & Background chapters, half of the rules chapter \\
+5 & 27 Sep -- 3 Oct & Finished the rules chapter and checked it by hand on the litmus tests. Q1: wrote the first version of the checker and ran the 5 hand-written tests. Found that TSO and PSO needed a second graph and changed the rules. & Rules chapter, checker passing the hand-written tests \\
+6 & 4 -- 10 Oct & Q1: added the random programs, wrote the separate store-buffer simulation and compared it with the checker. Began writing the Q1 chapter. Started the C litmus test for Q2. & Counts for Q1, first draft of the Q1 chapter, first Q2 code \\
+7 & 11 -- 17 Oct & Q1: tidied the code into one file per model and finished the Q1 chapter. Q2: ran the test on a real machine, then repeated it with fences and different offsets. & Q1 chapter, raw data for Q2 \\
+8 & 18 -- 24 Oct & Q2: wrote the chapter from the raw data and summary table. Q3: wrote the first version of the cost model. Drafted the introduction. & Q2 chapter, first cost model \\
+9 & 25 -- 31 Oct & Q3: ran the buffer-size experiments, corrected the model text and wrote the Q3 chapter. Drafted the conclusion. Joined everything into one full draft and showed it to the advisor and a TA. & Q3 chapter, full draft v1 \\
+10 & 1 -- 8 Nov & Checked every number in the text against the program output. Fixed the feedback on the draft. Applied the course formatting rules (A4, 12 pt, copyright page, acknowledgement, lists, index, glossary, code as listings, diagrams as TikZ). & Draft that follows most formatting rules \\
+11 & 9 -- 16 Nov & Moved long explanations to appendices. Ran the readability and Turnitin checks. Final build and read-through. Uploaded on Gradescope with all authors added. & Submitted paper \\
+\end{longtable}
 
 \chapter{Source Code}
 \label{app:code}
@@ -2132,94 +2215,75 @@ Every program used in this paper is printed below in full. The same files, with 
 The small functions that build each kind of arrow (\cref{sec:graphfile}).
 
 \begin{lstlisting}[style=vspython]
-"""
-graph.py -- small helpers for building arrows. The model files use them.
+"""Helpers for building order graphs."""
 
-An arrow is a pair (A, B) of events and means "A must happen before B".
-"""
-
-# Which pairs a fence puts back in order.
+# Pairs restored by each fence
 FENCE_RESTORES = {
-    "mfence": {"RR", "RW", "WW", "WR"},   # a full fence fixes everything
-    "stbar": {"WW"},                      # a store-store fence fixes only W then W
+    "mfence": {"RR", "RW", "WW", "WR"},
+    "stbar": {"WW"},
 }
 
 
 def pair(a, b):
-    """The kind of a pair of events, for example "WR" = a write then a read."""
     return a.kind + b.kind
 
 
 def program_order(events):
-    """All pairs (A, B) where A is written before B in the same thread."""
     pairs = []
     for a in events:
         for b in events:
             if a.thread is None or b.thread is None:
-                continue                    # initial writes belong to no thread
+                continue  # initial writes have no thread
             if a.thread == b.thread and a.index < b.index:
                 pairs.append((a, b))
+
     return pairs
 
 
 def preserved_program_order(events, kept):
-    """The program-order arrows that a model keeps (its ppo).
-
-    `kept` is the model's set of pairs, such as {"RR", "RW", "WW"}.
-    This is used for arrows between DIFFERENT addresses.
-    Two operations on the same address are always kept in order, except a
-    write followed by a read: that read may be answered from the thread's
-    own store buffer, so that pair is left to same_address_arrows below.
-    """
     arrows = []
     for a, b in program_order(events):
         if a.var != b.var:
             if pair(a, b) in kept:
                 arrows.append((a, b))
-        elif pair(a, b) != "WR":
+        elif pair(a, b) != "WR":  # W -> R may get its value from the store buffer
             arrows.append((a, b))
+
     return arrows
 
 
 def fence_arrows(events, fences):
-    """The arrows that fences put back in order."""
     arrows = []
     for a, b in program_order(events):
-        for fence_thread, fence_position, fence_kind in fences:
-            fence_is_between = (a.thread == fence_thread
-                                and a.index < fence_position < b.index)
-            if fence_is_between and pair(a, b) in FENCE_RESTORES[fence_kind]:
+        for tid, pos, kind in fences:
+            between = (a.thread == tid and a.index < pos < b.index)
+            if between and pair(a, b) in FENCE_RESTORES[kind]:
                 arrows.append((a, b))
+
     return arrows
 
 
 def external_reads_from(reads_from):
-    """The reads-from arrows between different threads."""
     return [(write, read) for write, read in reads_from
             if write.thread != read.thread]
 
 
 def from_read_arrows(reads_from, write_order):
-    """A read must come before every write that overwrites the value it read.
-
-    Example: read r read the initial write, and the initial write comes
-    before write c in the write order. Then r must happen before c,
-    otherwise r would have seen c's value instead.
-    """
     arrows = []
     for write, read in reads_from:
-        for earlier, later in write_order:
-            if earlier is write:
-                arrows.append((read, later))
+        for first, later in write_order:
+            if first is write:
+                arrows.append((read, later))  # read before later writes
+
     return arrows
 
 
 def same_address_arrows(events, reads_from, write_order):
-    """Each single address on its own: program order on that address,
-    reads-from, write order and from-read. Every model needs this graph."""
-    same_address_po = [(a, b) for a, b in program_order(events)
-                       if a.var == b.var]
-    return (same_address_po + reads_from + write_order
+    # Same-address program order, reads-from, write order and from-read
+    same_po = [(a, b) for a, b in program_order(events)
+               if a.var == b.var]
+
+    return (same_po + reads_from + write_order
             + from_read_arrows(reads_from, write_order))
 \end{lstlisting}
 
@@ -2227,18 +2291,14 @@ def same_address_arrows(events, reads_from, write_order):
 One graph with every program-order arrow (\cref{sec:modeltable}).
 
 \begin{lstlisting}[style=vspython]
-"""sc.py -- SC: every program-order pair is kept.
-
-graphs(...) returns the list of graphs that must have no loop.
-For SC there is just one: program order, reads-from, write order, from-read.
-(Fences change nothing, because SC already keeps every pair in order.)
-"""
+"""SC keeps every program-order pair."""
 from graph import program_order, from_read_arrows
 
 
 def graphs(events, fences, reads_from, write_order):
     arrows = (program_order(events) + reads_from + write_order
               + from_read_arrows(reads_from, write_order))
+    
     return [arrows]
 \end{lstlisting}
 
@@ -2246,13 +2306,7 @@ def graphs(events, fences, reads_from, write_order):
 The global graph and the graph of one address. The file \texttt{pso.py} below differs only in the set of kept pairs.
 
 \begin{lstlisting}[style=vspython]
-"""tso.py -- TSO: drops W then R (the store buffer).
-
-graphs(...) returns the two graphs that must both have no loop:
-  1. the global graph: the program order TSO keeps, the arrows of fences,
-     reads-from between different threads, write order, from-read;
-  2. the same-address graph, which every model needs.
-"""
+"""TSO relaxes W -> R because of the store buffer."""
 from graph import (preserved_program_order, fence_arrows, external_reads_from,
                    from_read_arrows, same_address_arrows)
 
@@ -2265,6 +2319,7 @@ def graphs(events, fences, reads_from, write_order):
                      + external_reads_from(reads_from)
                      + write_order
                      + from_read_arrows(reads_from, write_order))
+    
     return [global_arrows, same_address_arrows(events, reads_from, write_order)]
 \end{lstlisting}
 
@@ -2272,13 +2327,7 @@ def graphs(events, fences, reads_from, write_order):
 The same as \texttt{tso.py}, with one pair fewer kept.
 
 \begin{lstlisting}[style=vspython]
-"""pso.py -- PSO: drops W then R and W then W.
-
-graphs(...) returns the two graphs that must both have no loop:
-  1. the global graph: the program order PSO keeps, the arrows of fences,
-     reads-from between different threads, write order, from-read;
-  2. the same-address graph, which every model needs.
-"""
+"""PSO relaxes W -> R and W -> W."""
 from graph import (preserved_program_order, fence_arrows, external_reads_from,
                    from_read_arrows, same_address_arrows)
 
@@ -2291,6 +2340,7 @@ def graphs(events, fences, reads_from, write_order):
                      + external_reads_from(reads_from)
                      + write_order
                      + from_read_arrows(reads_from, write_order))
+    
     return [global_arrows, same_address_arrows(events, reads_from, write_order)]
 \end{lstlisting}
 
@@ -2343,24 +2393,6 @@ RANDOM_TESTS = [
 The checker of \cref{ch:checker}. It does the checking only; the arrows come from the model files. It has no outside dependencies.
 
 \begin{lstlisting}[style=vspython]
-"""
-checker.py -- decides which outcomes SC, TSO and PSO allow.
-
-The checking is done in five steps:
-  1. Turn every read and write of the program into an "event".
-  2. Guess an execution: for each read, which write it got its value from,
-     and for each address, the order in which its writes reached memory.
-  3. Ask the model for the arrows of that guess.
-  4. If the arrows make a loop (a cycle), the guess is impossible,
-     because some event would have to happen before itself.
-  5. The outcomes of the guesses that have no loop are the allowed outcomes.
-
-This file only does the checking (steps 1, 2, 4 and 5).
-Step 3, building the arrows, is done by the model files:
-sc.py, tso.py and pso.py, which use the small helpers in graph.py.
-
-Run:  python3 checker.py
-"""
 from itertools import permutations, product
 
 from tests import LITMUS, TARGET, EXPECTED, RANDOM_TESTS
@@ -2368,319 +2400,298 @@ import sc
 import tso
 import pso
 
-# The three models. Each model file has a function graphs(...) that builds
-# the arrows of a guess.
+
 MODELS = [("SC", sc), ("TSO", tso), ("PSO", pso)]
 
 
-# ----------------------------------------------------------------------
-# Step 1: events
-# ----------------------------------------------------------------------
 class Event:
-    """One read or one write of the program."""
-
     def __init__(self, kind, var, value=None, reg=None,
                  thread=None, index=None, label=None):
-        self.kind = kind        # "R" for a read, "W" for a write
-        self.var = var          # the address it touches: "x" or "y"
-        self.value = value      # the value written (writes only)
-        self.reg = reg          # the register that receives the value (reads only)
-        self.thread = thread    # which thread it belongs to (None for initial writes)
-        self.index = index      # its position inside its thread: 0, 1, 2, ...
-        self.label = label      # a short name for printing: a, b, c, ...
+        self.kind = kind
+        self.var = var
+        self.value = value
+        self.reg = reg
+        self.thread = thread
+        self.index = index
+        self.label = label
 
     def __repr__(self):
         return self.label
 
 
 def find_variables(test):
-    """Return the sorted list of addresses the program uses, e.g. ["x", "y"]."""
-    names = set()
+    var_list = set()
+
     for thread in test:
-        for instruction in thread:
-            if instruction[0] == "W":
-                names.add(instruction[1])      # ("W", var, value)
-            elif instruction[0] == "R":
-                names.add(instruction[2])      # ("R", reg, var)
-    return sorted(names)
+        for op in thread:
+            if op[0] == "W":
+                var_list.add(op[1])
+            elif op[0] == "R":
+                var_list.add(op[2])
+
+    return sorted(var_list)
+
+
+def make_label(cnt):
+    label = ""
+    while cnt >= 0:
+        label = chr(ord("a") + cnt % 26) + label
+        cnt = cnt // 26 - 1
+    return label
 
 
 def make_events(test):
-    """Turn the program into a list of events.
-
-    Returns (events, fences, variables).
-    Fences are not events. They are kept in a separate list of
-    (thread number, position in thread, kind of fence).
-    """
-    variables = find_variables(test)
+    var_list = find_variables(test)
     events = []
     fences = []
 
-    # Every address starts with the value 0. We model that as an initial
-    # write, so that every read always has some write to read from.
-    for var in variables:
+    # Add the initial write for every variable before the program events.
+    for var in var_list:
         events.append(Event("W", var, value=0, label="init_" + var))
 
-    # Now the real instructions. We name the events a, b, c, ... in order.
-    letters = "abcdefghijklmnopqrstuvwxyz"
-    next_letter = 0
-    for thread_number in range(len(test)):
-        thread = test[thread_number]
-        for position in range(len(thread)):
-            instruction = thread[position]
-            if instruction[0] == "W":
-                _, var, value = instruction
-                events.append(Event("W", var, value=value,
-                                    thread=thread_number, index=position,
-                                    label=letters[next_letter]))
-                next_letter += 1
-            elif instruction[0] == "R":
-                _, reg, var = instruction
+    cnt = 0
+    for tid, thread in enumerate(test):
+        for pos, op in enumerate(thread):
+            if op[0] == "W":
+                _, var, val = op
+                events.append(Event("W", var, value=val,
+                                    thread=tid, index=pos,
+                                    label=make_label(cnt)))
+                cnt += 1
+
+            elif op[0] == "R":
+                _, reg, var = op
                 events.append(Event("R", var, reg=reg,
-                                    thread=thread_number, index=position,
-                                    label=letters[next_letter]))
-                next_letter += 1
-            else:                                   # a fence
-                _, kind = instruction
-                fences.append((thread_number, position, kind))
-    return events, fences, variables
+                                    thread=tid, index=pos,
+                                    label=make_label(cnt)))
+                cnt += 1
+
+            else:
+                _, kind = op
+                fences.append((tid, pos, kind))
+
+    return events, fences, var_list
 
 
-# ----------------------------------------------------------------------
-# Step 4: finding a loop (cycle) in a set of arrows
-# ----------------------------------------------------------------------
 def has_cycle(nodes, arrows):
-    """Return True if the arrows contain a loop.
+    indeg = {}
+    adj = {}
 
-    Method: a node with no arrow pointing into it can safely be removed
-    (it has nothing before it). Remove such nodes one after another.
-    If every node gets removed, there was no loop.
-    If some nodes can never be removed, they are stuck in a loop.
-    """
-    arrows_into = {}        # node -> how many arrows point into it
-    arrows_out_of = {}      # node -> list of nodes it points to
     for node in nodes:
-        arrows_into[node] = 0
-        arrows_out_of[node] = []
+        indeg[node] = 0
+        adj[node] = []
 
-    for start, end in set(arrows):      # set() removes repeated arrows
-        arrows_out_of[start].append(end)
-        arrows_into[end] += 1
+    for u, v in set(arrows):
+        adj[u].append(v)
+        indeg[v] += 1
 
-    can_remove = []
+    st = []
     for node in nodes:
-        if arrows_into[node] == 0:
-            can_remove.append(node)
+        if indeg[node] == 0:
+            st.append(node)
 
-    removed_count = 0
-    while len(can_remove) > 0:
-        node = can_remove.pop()
-        removed_count += 1
-        for next_node in arrows_out_of[node]:
-            arrows_into[next_node] -= 1
-            if arrows_into[next_node] == 0:
-                can_remove.append(next_node)
+    cnt = 0
+    while st:
+        u = st.pop()
+        cnt += 1
 
-    return removed_count != len(nodes)
+        for v in adj[u]:
+            indeg[v] -= 1
+            if indeg[v] == 0:
+                st.append(v)
+
+    return cnt != len(nodes)
 
 
-# ----------------------------------------------------------------------
-# Step 2: guessing executions
-# ----------------------------------------------------------------------
-def all_guesses(events, variables):
-    """Every possible guess of an execution.
-
-    A guess has two parts:
-      reads_from : a list of (write, read) pairs, one per read
-      write_order: a list of (earlier write, later write) pairs, per address
-    Also returns `orders`, the final order of the writes of each address.
-    """
+def all_guesses(events, var_list):
     reads = [e for e in events if e.kind == "R"]
 
-    # The writes to each address. The initial write is always first.
-    writes_to = {}
-    for var in variables:
-        writes_to[var] = [e for e in events if e.kind == "W" and e.var == var]
+    writes = {}
+    for var in var_list:
+        writes[var] = [e for e in events if e.kind == "W" and e.var == var]
 
-    # Choice 1: each read picks one write to its own address.
-    options_for_each_read = []
-    for read in reads:
-        options_for_each_read.append(writes_to[read.var])
+    read_opts = []
+    for r in reads:
+        read_opts.append(writes[r.var])
 
-    # Choice 2: for each address, the order of its writes.
-    # The initial write stays first; the others can come in any order.
-    orders_for_each_var = []
-    for var in variables:
-        initial = writes_to[var][0]
-        others = writes_to[var][1:]
-        possible_orders = []
-        for arrangement in permutations(others):
-            possible_orders.append([initial] + list(arrangement))
-        orders_for_each_var.append(possible_orders)
+    write_opts = []
+    for var in var_list:
+        init = writes[var][0]
+        other = writes[var][1:]
+
+        arr = []
+        for p in permutations(other):
+            arr.append([init] + list(p))
+
+        write_opts.append(arr)
 
     guesses = []
-    for chosen_writes in product(*options_for_each_read):
-        reads_from = list(zip(chosen_writes, reads))
-        for orders in product(*orders_for_each_var):
-            # An order [w1, w2, w3] means the pairs (w1,w2) (w1,w3) (w2,w3).
+    for chosen in product(*read_opts):
+        reads_from = list(zip(chosen, reads))
+
+        for orders in product(*write_opts):
             write_order = []
             for order in orders:
                 for i in range(len(order)):
                     for j in range(i + 1, len(order)):
                         write_order.append((order[i], order[j]))
+
             guesses.append((reads_from, write_order, orders))
+
     return guesses
 
 
-# ----------------------------------------------------------------------
-# Steps 4 and 5: which guesses are possible?
-# ----------------------------------------------------------------------
 def guess_is_possible(events, fences, model, guess):
-    """Is this one guess of an execution possible under the model?
+    reads_from, write_order, _ = guess
 
-    The model file builds the graphs (a list of lists of arrows).
-    The guess is possible only if none of them has a loop.
-    """
-    reads_from, write_order, _orders = guess
     for arrows in model.graphs(events, fences, reads_from, write_order):
         if has_cycle(events, arrows):
             return False
+
     return True
 
 
 def outcome_of(guess):
-    """The outcome of a guess: (register values, final memory values)."""
-    reads_from, _write_order, orders = guess
+    reads_from, _, orders = guess
 
-    registers = []
+    reg_val = []
     for write, read in reads_from:
-        registers.append((read.reg, write.value))
-    registers = tuple(sorted(registers))
+        reg_val.append((read.reg, write.value))
+
+    # Sorting makes equivalent register outcomes have the same set representation.
+    reg_val = tuple(sorted(reg_val))
 
     memory = []
     for order in orders:
-        last_write = order[-1]
-        memory.append((last_write.var, last_write.value))
-    return registers, tuple(memory)
+        last = order[-1]
+        memory.append((last.var, last.value))
+
+    # var_list is sorted, so the final memory values are already in a fixed order.
+    return reg_val, tuple(memory)
 
 
 def check(test, model):
-    """Return the set of allowed outcomes of `test` under a model (sc, tso or pso).
-
-    An outcome is (register values, final memory values).
-    """
-    events, fences, variables = make_events(test)
+    events, fences, var_list = make_events(test)
     allowed = set()
-    for guess in all_guesses(events, variables):
+
+    for guess in all_guesses(events, var_list):
         if guess_is_possible(events, fences, model, guess):
             allowed.add(outcome_of(guess))
+
     return allowed
 
 
-# ----------------------------------------------------------------------
-# Running everything and printing the results
-# ----------------------------------------------------------------------
-def outcome_is_allowed(allowed, wanted):
-    """Is there an allowed outcome whose registers match `wanted`?
+def outcome_is_allowed(allowed, target):
+    for registers, _ in allowed:
+        vals = dict(registers)
+        ok = True
 
-    `wanted` looks like {"r0": 0, "r1": 0}.
-    """
-    for registers, _memory in allowed:
-        values = dict(registers)
-        matches = True
-        for reg, value in wanted.items():
-            if values[reg] != value:
-                matches = False
-        if matches:
+        for reg, val in target.items():
+            if vals[reg] != val:
+                ok = False
+                break
+
+        if ok:
             return True
+
     return False
 
 
 def run_litmus_tests():
-    """Print A (allowed) or F (forbidden) for each litmus test and model."""
-    all_as_expected = True
-    print("test         outcome       SC TSO PSO   as expected?")
+    ok = True
+    print("test outcome SC TSO PSO as expected?")
+
     for name, test in LITMUS.items():
         verdict = ""
-        for _model_name, model in MODELS:
+
+        for _, model in MODELS:
             allowed = check(test, model)
             if outcome_is_allowed(allowed, TARGET[name]):
                 verdict += "A"
             else:
                 verdict += "F"
-        as_expected = (verdict == EXPECTED[name])
-        if not as_expected:
-            all_as_expected = False
-        print("%-12s %-12s %3s %3s %3s   %s" % (
-            name, tuple(TARGET[name].values()),
-            verdict[0], verdict[1], verdict[2],
-            "yes" if as_expected else "NO"))
-    return all_as_expected
+
+        match = (verdict == EXPECTED[name])
+        if not match:
+            ok = False
+
+        print(f"{name:<12s} {str(tuple(TARGET[name].values())):<12s} "
+              f"{verdict[0]:>3s} {verdict[1]:>3s} {verdict[2]:>3s}   "
+              f"{'yes' if match else 'NO'}")
+
+    return ok
 
 
 def run_subset_check():
-    """Check that SC allows no more than TSO, and TSO no more than PSO.
+    progs = list(LITMUS.values()) + RANDOM_TESTS
 
-    We test it on the litmus tests and on all the random programs.
-    """
-    programs = list(LITMUS.values()) + RANDOM_TESTS
-    chain_broken = 0        # programs where the chain SC <= TSO <= PSO fails
-    sc_strictly_less = 0    # programs where SC allows strictly fewer than TSO
-    tso_strictly_less = 0   # programs where TSO allows strictly fewer than PSO
+    fail = 0
+    sc_less = 0
+    tso_less = 0
 
-    for program in programs:
-        allowed_sc = check(program, sc)
-        allowed_tso = check(program, tso)
-        allowed_pso = check(program, pso)
+    for test in progs:
+        a = check(test, sc)
+        b = check(test, tso)
+        c = check(test, pso)
 
-        # "<=" on sets means "is a subset of", "<" means "is a smaller subset".
-        if not (allowed_sc <= allowed_tso and allowed_tso <= allowed_pso):
-            chain_broken += 1
-        if allowed_sc < allowed_tso:
-            sc_strictly_less += 1
-        if allowed_tso < allowed_pso:
-            tso_strictly_less += 1
+        if not (a <= b and b <= c):
+            fail += 1
 
-    print("\nSubset check on %d programs" % len(programs))
-    print("  SC <= TSO <= PSO fails:            ", chain_broken)
-    print("  SC allows strictly less than TSO:  ", sc_strictly_less)
-    print("  TSO allows strictly less than PSO: ", tso_strictly_less)
-    return chain_broken == 0
+        if a < b:
+            sc_less += 1
+
+        if b < c:
+            tso_less += 1
+
+    print(f"\nSubset check on {len(progs)} programs")
+    print("  SC <= TSO <= PSO fails:            ", fail)
+    print("  SC allows strictly less than TSO:  ", sc_less)
+    print("  TSO allows strictly less than PSO: ", tso_less)
+
+    return fail == 0
 
 
 def print_candidates(name):
-    """Print every guess of one litmus test, and whether each model allows it."""
     test = LITMUS[name]
-    events, fences, variables = make_events(test)
-    print("\nCandidate executions of %s" % name)
-    print("  %-34s %-8s %7s %7s %7s" % ("who each read reads from", "(r0,r1)",
-                                       "SC", "TSO", "PSO"))
-    for guess in all_guesses(events, variables):
-        reads_from = guess[0]
-        words = []
-        for write, read in reads_from:
-            words.append("%s reads %s" % (read.label, write.label))
-        registers, _memory = outcome_of(guess)
-        values = "(" + ", ".join(str(v) for _, v in registers) + ")"
+    events, fences, var_list = make_events(test)
 
-        cells = []
-        for _model_name, model in MODELS:
+    print(f"\nCandidate executions of {name}")
+    print(f"  {'who each read reads from':<34s} {'(r0,r1)':<8s} "
+          f"{'SC':>7s} {'TSO':>7s} {'PSO':>7s}")
+
+    for guess in all_guesses(events, var_list):
+        reads_from = guess[0]
+
+        reads = []
+        for write, read in reads_from:
+            reads.append(f"{read.label} reads {write.label}")
+
+        registers, _ = outcome_of(guess)
+        vals = "(" + ", ".join(str(v) for _, v in registers) + ")"
+
+        ans = []
+        for _, model in MODELS:
             if guess_is_possible(events, fences, model, guess):
-                cells.append("allowed")
+                ans.append("allowed")
             else:
-                cells.append("cycle")
-        print("  %-34s %-8s %7s %7s %7s" % (", ".join(words), values,
-                                           cells[0], cells[1], cells[2]))
+                ans.append("cycle")
+
+        print(f"  {', '.join(reads):<34s} {vals:<8s} "
+              f"{ans[0]:>7s} {ans[1]:>7s} {ans[2]:>7s}")
 
 
 def main():
     litmus_ok = run_litmus_tests()
+
     print_candidates("SB")
     print_candidates("MP")
+
     subset_ok = run_subset_check()
-    everything_ok = litmus_ok and subset_ok
-    print("\nAll checks passed:", "yes" if everything_ok else "NO")
-    return everything_ok
+
+    ok = litmus_ok and subset_ok
+    print("\nAll checks passed:", "yes" if ok else "NO")
+
+    return ok
 
 
 if __name__ == "__main__":
@@ -2692,46 +2703,25 @@ if __name__ == "__main__":
 The step-by-step simulation of \cref{sec:sim}. It imports the checker and the tests.
 
 \begin{lstlisting}[style=vspython]
-"""
-sb_machine.py -- a second way to find the allowed outcomes: simulate hardware.
+"""Store-buffer simulation for SC, TSO and PSO.
 
-checker.py uses arrows and loops. This program does not. It builds the
-machine of Chapter 4 and tries EVERY possible order of hardware steps.
+Explores the possible instruction and buffer-drain steps, then compares the
+final outcomes with checker.py.
 
-The machine
-  * one shared memory;
-  * one store buffer per thread (a list of pending stores);
-  * a thread runs its instructions in program order, one per step;
-  * a write goes into the thread's own buffer (SC has no buffer: the write
-    goes straight to memory);
-  * a read first looks in its own buffer for the newest store to the same
-    address (store-to-load forwarding), and only then reads memory;
-  * at any moment the hardware may move one buffer entry into memory.
+SC   writes go straight to memory
+TSO  only the oldest buffered store can drain
+PSO  stores to different addresses may drain out of order
 
-The models differ only in WHICH buffer entry may move to memory:
-  SC   there is no buffer
-  TSO  only the oldest entry may move (the buffer is a FIFO)
-  PSO  any entry may move, unless an older entry has the same address,
-       or an older stbar marker is still waiting in front of it
+mfence waits for an empty buffer; stbar leaves a marker in the buffer.
 
-Fences
-  mfence  the thread waits until its own buffer is empty
-  stbar   puts a marker in the buffer; stores behind the marker must wait
-
-Run:  python3 sb_machine.py     (needs checker.py, tests.py, graph.py, sc.py, tso.py, pso.py)
+Run: python3 sb_machine.py
 """
 from checker import check, MODELS
 from tests import LITMUS, RANDOM_TESTS
 
-# A buffer entry is ("S", address, value) for a pending store,
-# or ("B",) for an stbar marker.
-#
-# A state of the whole machine is a tuple of four things:
-#   pcs     for each thread, how many instructions it has run
-#   buffers for each thread, its store buffer (a tuple of entries)
-#   memory  a tuple of (address, value) pairs
-#   regs    a tuple of (register, value) pairs, filled as reads happen
-# We use tuples (not lists) so a state can be stored in a set.
+# Buffer entries: ("S", address, value) or an stbar marker ("B",)
+# State: program counters, buffers, memory and register values
+# Tuples let us store each state in a set.
 
 
 def addresses_used(test):
@@ -2750,48 +2740,48 @@ def start_state(test):
     for address in addresses_used(test):
         memory.append((address, 0))         # every address starts at 0
     pcs = tuple(0 for _ in test)
-    buffers = tuple(() for _ in test)       # every buffer starts empty
+    buffers = tuple(() for _ in test)       # empty buffers
     return (pcs, buffers, tuple(memory), ())
 
 
 def write_to_memory(memory, address, value):
-    """Return a copy of memory with one address changed."""
+    """Copy memory and update one address."""
     as_dict = dict(memory)
     as_dict[address] = value
     return tuple(sorted(as_dict.items()))
 
 
 def replace_item(items, index, new_item):
-    """Return a copy of the tuple `items` with one position replaced."""
+    """Copy a tuple with one item replaced."""
     return items[:index] + (new_item,) + items[index + 1:]
 
 
 def may_drain(buffer, i, model):
-    """May entry number i of this buffer move to memory right now?"""
+    """Whether entry i can drain now."""
     entry = buffer[i]
     if entry[0] != "S":
-        return False                        # a marker is not a store
+        return False  # marker
     if model == "TSO":
-        return i == 0                       # only the oldest entry
-    # PSO: look at every OLDER entry.
+        return i == 0  # FIFO
+    # PSO: check older entries
     for older in buffer[:i]:
         if older[0] == "B":
-            return False                    # an older stbar is still waiting
+            return False  # older stbar
         if older[1] == entry[1]:
-            return False                    # an older store to the same address
+            return False  # older store to the same address
     return True
 
 
 def read_value(buffer, memory, address):
-    """The value a read of `address` gets: newest buffered store, else memory."""
-    for entry in reversed(buffer):          # newest entry first
+    """Read the newest matching store, or memory if there is none."""
+    for entry in reversed(buffer):  # newest first
         if entry[0] == "S" and entry[1] == address:
             return entry[2]
     return dict(memory)[address]
 
 
 def next_states(state, test, model):
-    """Every state the machine can reach in ONE step."""
+    """Possible states after one step."""
     pcs, buffers, memory, regs = state
     result = []
 
@@ -2799,7 +2789,7 @@ def next_states(state, test, model):
         thread = test[t]
         buffer = buffers[t]
 
-        # ---- Kind 1 of step: thread t runs its next instruction ----
+        # Thread t runs its next instruction
         if pcs[t] < len(thread):
             instruction = thread[pcs[t]]
             new_pcs = replace_item(pcs, t, pcs[t] + 1)
@@ -2807,11 +2797,11 @@ def next_states(state, test, model):
             if instruction[0] == "W":
                 _, address, value = instruction
                 if model == "SC":
-                    # no buffer: straight to memory
+                    # SC: straight to memory
                     new_memory = write_to_memory(memory, address, value)
                     result.append((new_pcs, buffers, new_memory, regs))
                 else:
-                    # into the thread's buffer
+                    # add to its buffer
                     new_buffer = buffer + (("S", address, value),)
                     result.append((new_pcs, replace_item(buffers, t, new_buffer),
                                    memory, regs))
@@ -2825,7 +2815,7 @@ def next_states(state, test, model):
             else:                           # a fence
                 _, kind = instruction
                 if kind == "mfence":
-                    # may only pass when the thread's buffer is empty
+                    # wait for an empty buffer
                     if len(buffer) == 0:
                         result.append((new_pcs, buffers, memory, regs))
                 elif kind == "stbar":
@@ -2834,12 +2824,12 @@ def next_states(state, test, model):
                         result.append((new_pcs, replace_item(buffers, t, new_buffer),
                                        memory, regs))
                     else:
-                        # SC and TSO already keep write-then-write order
+                        # SC and TSO already keep W -> W order
                         result.append((new_pcs, buffers, memory, regs))
 
-        # ---- Kind 2 of step: the hardware drains one entry of buffer t ----
+        # Hardware drains an entry from buffer t
         if len(buffer) > 0 and buffer[0][0] == "B":
-            # a marker at the very front simply leaves
+            # remove a marker at the front
             result.append((pcs, replace_item(buffers, t, buffer[1:]),
                            memory, regs))
         for i in range(len(buffer)):
@@ -2854,11 +2844,7 @@ def next_states(state, test, model):
 
 
 def all_final_outcomes(test, model):
-    """Try every order of steps. Return (set of outcomes, number of states seen).
-
-    An outcome is (register values, final memory), written the same way as in
-    checker.py so the two can be compared directly.
-    """
+    """Explore step orders and collect final outcomes."""
     start = start_state(test)
     seen = {start}
     to_visit = [start]
@@ -2868,8 +2854,7 @@ def all_final_outcomes(test, model):
         state = to_visit.pop()
         pcs, buffers, memory, regs = state
 
-        # The run is finished when every thread ran all its instructions
-        # and every buffer has emptied into memory.
+        # All instructions done and buffers empty
         all_threads_done = all(pcs[t] == len(test[t]) for t in range(len(test)))
         all_buffers_empty = all(len(b) == 0 for b in buffers)
         if all_threads_done and all_buffers_empty:
@@ -2926,27 +2911,18 @@ The C program of \cref{ch:hw}.
 
 \begin{lstlisting}[style=vsc]
 /*
- * litmus.c  --  run the SB and MP litmus tests on a real x86-64 machine.
+ * Run the SB and MP litmus tests on x86-64.
  *
- * ELL305 term paper, IIT Delhi, 2026.
+ * Two threads run on separate cores. Each iteration starts at a barrier,
+ * runs the test, then meets again to record the result and reset x and y.
  *
- * Two threads, each pinned to its own core.  In every iteration:
- *   1. both threads wait at a spin barrier so that they start together;
- *   2. each thread runs its two instructions of the test;
- *   3. both wait at a second barrier, thread 0 records (r0, r1) and resets x, y.
+ * Tests:
+ *   sb          write x / read y, and write y / read x
+ *   sb_mfence   same test with mfence between each write and read
+ *   mp          write x then y; the other thread reads y then x
  *
- * Tests
- *   sb          T0: x = 1; r0 = y          T1: y = 1; r1 = x
- *   sb_mfence   the same, with mfence between the write and the read
- *   mp          T0: x = 1; y = 1           T1: r0 = y; r1 = x
- *
- * Usage:   ./litmus <test> <iterations> [skew]
- *   skew = number of empty loop turns thread 1 waits before its first
- *          instruction, to shift the two threads slightly in time.
- *
- * Output:  one line with the count of each outcome (r0, r1).
- *
- * Build:   gcc -O2 -pthread -o litmus litmus.c
+ * Usage: ./litmus <test> <iterations> [skew]
+ * skew delays thread 1 before its first instruction.
  */
 #define _GNU_SOURCE
 #include <pthread.h>
@@ -2956,8 +2932,7 @@ The C program of \cref{ch:hw}.
 #include <stdlib.h>
 #include <string.h>
 
-/* Each shared variable sits on its own 64-byte cache line, so that the two
- * variables do not interfere through the coherence protocol. */
+/* Keep each shared variable on its own cache line. */
 struct padded { _Atomic int v; char pad[60]; };
 static struct padded X, Y, R1, BAR_COUNT, BAR_SENSE;
 
@@ -2965,13 +2940,12 @@ static long iterations;
 static int skew;
 enum { SB, SB_MFENCE, MP } test;
 
-/* Relaxed atomics compile to plain mov on x86-64.  They stop the compiler
- * from merging or reordering the accesses and add no fence. */
+/* Relaxed atomics add no fence on x86-64. */
 #define ST(var, val) atomic_store_explicit(&(var).v, (val), memory_order_relaxed)
 #define LD(var)      atomic_load_explicit(&(var).v, memory_order_relaxed)
 #define MFENCE()     __asm__ __volatile__("mfence" ::: "memory")
 
-/* Sense-reversing spin barrier for two threads. */
+/* Two-thread sense-reversing barrier. */
 static void barrier(int *local_sense)
 {
     *local_sense = !*local_sense;
@@ -2997,8 +2971,7 @@ static void pin(int cpu)
 
 static long counts[2][2];
 
-/* The test bodies are kept in separate functions (noinline) so that the
- * assembly of each one can be read with objdump -d. */
+/* Separate noinline functions make the test assembly easy to inspect. */
 __attribute__((noinline)) int t0_sb(void)        { ST(X, 1); return LD(Y); }
 __attribute__((noinline)) int t1_sb(void)        { ST(Y, 1); return LD(X); }
 __attribute__((noinline)) int t0_sb_mfence(void) { ST(X, 1); MFENCE(); return LD(Y); }
@@ -3073,9 +3046,9 @@ Runs every hardware configuration ten times.
 
 \begin{lstlisting}[style=vscode,language=bash]
 #!/bin/sh
-# run_litmus.sh -- every hardware run reported in Chapter 7.
-# Each configuration is repeated REPEATS times with ITER iterations per run.
-# Output: results/litmus_raw.csv
+# Run the Chapter 7 hardware configurations.
+# Each configuration runs REPEATS times, with ITER iterations per run.
+# Results: results/litmus_raw.csv
 set -e
 cd "$(dirname "$0")"
 gcc -O2 -Wall -pthread -o litmus litmus.c
@@ -3083,7 +3056,7 @@ ITER=1000000
 REPEATS=10
 OUT=../results/litmus_raw.csv
 echo "test,skew,repeat,iterations,c00,c01,c10,c11" > $OUT
-run() {   # test skew
+run() {  # test and skew
     for r in $(seq 1 $REPEATS); do
         line=$(./litmus "$1" $ITER "$2")
         c00=$(echo "$line" | sed 's/.*(0,0)=\([0-9]*\).*/\1/')
@@ -3104,13 +3077,10 @@ Computes the statistics of \cref{sec:stats}.
 
 \begin{lstlisting}[style=vspython]
 #!/usr/bin/env python3
-"""
-summarise.py -- turn results/litmus_raw.csv into the numbers of Chapter 7.
+"""Summarise litmus results by test and skew.
 
-For every configuration (test, skew) it reports, over the repeats, the
-fraction of iterations that showed the outcome the test asks about:
-median, minimum, maximum, mean and sample standard deviation.  When an
-outcome never appears it also reports the rule-of-three bound 3/N.
+Reports the hit fraction across runs: median, range, mean and sample
+standard deviation. Also prints the 3/N bound when there are no hits.
 """
 import csv
 import statistics as st
@@ -3127,22 +3097,28 @@ with open("../results/litmus_raw.csv") as f:
 print("%-17s %5s %4s %10s %10s %10s %10s %10s %9s %s" % (
     "test", "skew", "runs", "total N", "median", "min", "max", "mean",
     "sd", "hits"))
+
 for (test, skew), rs in rows.items():
     key = TARGET[test]
     fr = [int(r[key]) / int(r["iterations"]) for r in rs]
     hits = sum(int(r[key]) for r in rs)
     total = sum(int(r["iterations"]) for r in rs)
+
     print("%-17s %5d %4d %10d %10.5f %10.5f %10.5f %10.5f %9.5f %d" % (
         NAME[test], skew, len(rs), total, st.median(fr), min(fr), max(fr),
         st.mean(fr), st.stdev(fr), hits), end="")
+    
     if hits == 0:
         print("   rule of three: p < %.1e" % (3 / total), end="")
     print()
 
 print("\nAll four outcomes, summed over the repeats, skew 0")
+
 for test in ["sb", "sb_mfence", "mp"]:
     rs = rows[(test, 0)]
     s = {k: sum(int(r[k]) for r in rs) for k in ["c00", "c01", "c10", "c11"]}
+
+    
     print("  %-10s (0,0)=%d (0,1)=%d (1,0)=%d (1,1)=%d" % (
         test, s["c00"], s["c01"], s["c10"], s["c11"]))
 \end{lstlisting}
@@ -3152,30 +3128,14 @@ The model of \cref{sec:cpimodel}.
 
 \begin{lstlisting}[style=vspython]
 #!/usr/bin/env python3
-"""
-cpi_model.py -- a toy model of what a store buffer saves (Chapter 8).
+"""A small CPI model comparing stalls with a store buffer (Chapter 8).
 
-This is a model, not a measurement of any real processor.
-
-The core
-  * runs one instruction per cycle when nothing stops it;
-  * a fraction f of the instructions are stores;
-  * a store takes L_HIT cycles to finish if its line is in the cache and
-    L_MISS cycles if it is not; a fraction m of stores miss.
-
-Two designs
-  stall   (strict SC without tricks) the core waits for every store to finish;
-  buffer  (TSO style) the store goes into a FIFO of B entries and the core
-          carries on.  The buffer finishes one store at a time, oldest first.
-          The core waits only when the buffer is full.
-
-The program prints
-  1. the back-of-envelope formula CPI = 1 + f * L for a few values, and
-  2. a cycle-by-cycle simulation of both designs as B grows.
+Prints the simple CPI formula and a cycle-by-cycle simulation as buffer size
+changes. This is a model, not a measurement of a real processor.
 """
 import random
 
-N = 200_000          # instructions per simulated run
+N = 200_000  # instructions per run
 SEED = 305
 
 
@@ -3187,17 +3147,17 @@ def simulate(f, m, l_hit, l_miss, B, seed=SEED):
     """Cycles per instruction of the buffered design."""
     rng = random.Random(seed)
     cycle = 0
-    buffer = []                 # finish times of the stores in the buffer
-    busy_until = 0              # when the memory side finishes its current store
+    buffer = []                 # pending store finish times
+    busy_until = 0              # when memory is free
     for _ in range(N):
-        cycle += 1                                    # issue this instruction
-        buffer = [t for t in buffer if t > cycle]     # drop finished stores
-        if rng.random() < f:                          # this one is a store
-            if len(buffer) == B:                      # full: wait for the oldest
+        cycle += 1
+        buffer = [t for t in buffer if t > cycle]     # remove completed stores
+        if rng.random() < f:
+            if len(buffer) == B:                      # wait for the oldest store
                 cycle = buffer[0]
                 buffer.pop(0)
             lat = l_miss if rng.random() < m else l_hit
-            start = max(cycle, busy_until)            # one store at a time, FIFO
+            start = max(cycle, busy_until)            # FIFO order
             busy_until = start + lat
             buffer.append(busy_until)
     return cycle / N
@@ -3216,29 +3176,39 @@ def simulate_stall(f, m, l_hit, l_miss, seed=SEED):
 def main():
     print("Part 1: back-of-envelope CPI = 1 + f * L (every store stalls)")
     print("%6s %6s %8s" % ("f", "L", "CPI"))
+
     for f in (0.05, 0.10, 0.20):
         for L in (4, 100, 300):
             print("%6.2f %6d %8.2f" % (f, L, 1 + f * L))
 
     f, m, l_hit, l_miss = 0.10, 0.05, 4, 100
     avg = (1 - m) * l_hit + m * l_miss
+
     print("\nPart 2: simulation, f = %.2f, miss rate m = %.2f, "
           "L_hit = %d, L_miss = %d" % (f, m, l_hit, l_miss))
+    
     print("average store latency = %.1f cycles; formula for stall design "
           "gives CPI = %.2f" % (avg, 1 + f * avg))
+    
     print("stall design, simulated: CPI = %.3f"
           % simulate_stall(f, m, l_hit, l_miss))
+    
     print("%8s %10s" % ("B", "CPI"))
+
     for B in (1, 2, 4, 8, 16, 32, 56):
         print("%8d %10.3f" % (B, simulate(f, m, l_hit, l_miss, B)))
 
     print("\nPart 3: when stores arrive faster than memory can finish them")
+
     f2, m2 = 0.20, 0.10
     avg2 = (1 - m2) * l_hit + m2 * l_miss
+
     print("f = %.2f, m = %.2f: average store latency %.1f, f x latency = %.2f"
           % (f2, m2, avg2, f2 * avg2))
+    
     print("stall design, simulated: CPI = %.3f"
           % simulate_stall(f2, m2, l_hit, l_miss))
+    
     for B in (8, 56):
         print("buffer B = %2d: CPI = %.3f" % (B, simulate(f2, m2, l_hit,
                                                            l_miss, B)))
@@ -3253,16 +3223,12 @@ Computes \cref{tab:read}.
 
 \begin{lstlisting}[style=vspython]
 #!/usr/bin/env python3
-"""
-readability.py -- readability indices of the main text of the paper (Appendix B).
+"""Readability scores for the main text of the paper (Appendix B).
 
-It takes the LaTeX source, keeps only the prose of the main chapters
-(Chapter 1 to the start of the appendices), removes listings, tables,
-figures, equations, citations and commands, and applies the published
-formulas.  Syllables are counted by a simple rule, so the values can
-differ slightly from those of a website.
+Takes the LaTeX source, keeps the main chapters and removes non-prose
+content before applying the readability formulas.
 
-Usage:  python3 readability.py term_paper.tex
+Usage: python3 readability.py term_paper.tex
 """
 import re
 import sys
@@ -3278,9 +3244,9 @@ def prose(tex):
         t = re.sub(r"\\begin\{%s\}.*?\\end\{%s\}" % (re.escape(env),
                                                      re.escape(env)),
                    " ", t, flags=re.S)
-    t = re.sub(r"\\\[.*?\\\]", " ", t, flags=re.S)          # display maths
-    t = re.sub(r"\$[^$]*\$", " X ", t)                       # inline maths
-    t = re.sub(r"%.*", " ", t)                               # comments
+    t = re.sub(r"\\\[.*?\\\]", " ", t, flags=re.S)          # display math
+    t = re.sub(r"\$[^$]*\$", " X ", t)                       # inline math
+    t = re.sub(r"%.*", " ", t)                               # LaTeX comments
     t = re.sub(r"\\cite\{[^}]*\}", " ", t)
     t = re.sub(r"\\(cref|Cref|ref|label|index)\{[^}]*\}", " it ", t)
     t = re.sub(r"\\(chapter|section|subsection|paragraph)\*?\{[^}]*\}",
@@ -3288,9 +3254,10 @@ def prose(tex):
     t = re.sub(r"\\begin\{[^}]*\}(\{[^}]*\})?|\\end\{[^}]*\}", " ", t)
     t = re.sub(r"\\(emph|textbf|code|texttt|textsf)\{([^}]*)\}", r"\2", t)
     t = re.sub(r"\\outc\{[^}]*\}\{[^}]*\}", " it ", t)
-    t = re.sub(r"\\[A-Za-z]+\*?", " ", t)                    # other commands
+    t = re.sub(r"\\[A-Za-z]+\*?", " ", t)                    # other LaTeX commands
     t = re.sub(r"[{}\\~]", " ", t)
     t = re.sub(r"\s+", " ", t)
+
     return t
 
 
@@ -3298,8 +3265,11 @@ def syllables(word):
     w = word.lower()
     if len(w) <= 3:
         return 1
+
+    
     w = re.sub(r"(?:[^laeiouy]es|ed|[^laeiouy]e)$", "", w)
     w = re.sub(r"^y", "", w)
+
     return max(1, len(re.findall(r"[aeiouy]{1,2}", w)))
 
 
@@ -3308,7 +3278,10 @@ def main(path):
     sentences = [s for s in re.split(r"(?<=[.!?])\s+", text)
                  if len(re.findall(r"[A-Za-z]+", s)) >= 3]
     words = re.findall(r"[A-Za-z][A-Za-z'-]*", " ".join(sentences))
+
+
     W, S = len(words), len(sentences)
+    
     syl = [syllables(w) for w in words]
     Syl = sum(syl)
     poly = sum(1 for s in syl if s >= 3)
@@ -3323,6 +3296,7 @@ def main(path):
     Ssent = S / W * 100
     cli = 0.0588 * L - 0.296 * Ssent - 15.8
     ari = 4.71 * chars / W + 0.5 * W / S - 21.43
+
     print("words %d, sentences %d, words per sentence %.1f, "
           "syllables per word %.2f" % (W, S, W / S, Syl / W))
     print("Flesch reading ease       %.1f" % fre)
@@ -3346,7 +3320,7 @@ This appendix gives the raw outputs behind the tables of \cref{ch:checker,ch:hw,
 The complete output of \code{checker.py}.
 
 \begin{lstlisting}[style=vscode,numbers=none,basicstyle=\ttfamily\scriptsize\color{vsfg}]
-test         outcome       SC TSO PSO   as expected?
+test outcome SC TSO PSO as expected?
 SB           (0, 0)         F   A   A   yes
 SB+mfences   (0, 0)         F   F   F   yes
 MP           (1, 0)         F   F   A   yes
@@ -3491,6 +3465,7 @@ File & Purpose\\
 \code{summarise.py} & medians, minimums, maximums and the rule of three\\
 \code{cpi\_model.py} & the cost model of \cref{ch:cost}\\
 \code{readability.py} & the readability indices of \cref{app:read}\\
+\code{papers.bib} & the books and papers cited in the report\\
 \code{results/} & raw outputs: \code{checker\_output.txt}, \code{sb\_machine\_output.txt}, \code{litmus\_raw.csv}, \code{litmus\_summary.txt}, \code{litmus\_disasm.txt}, \code{cpi\_model\_output.txt}\\
 \bottomrule
 \end{tabularx}
@@ -3520,11 +3495,93 @@ pdflatex term_paper && bibtex term_paper && makeglossaries term_paper
 makeindex term_paper && pdflatex term_paper && pdflatex term_paper
 \end{lstlisting}
 
+% =====================================================================
+\chapter{How This Work Was Done}
+\label{app:how}
+% =====================================================================
+
+\section{The general approach to each question, and how we refined it}
+\label{sec:generalapproach}
+
+For each of the three questions there is a simple first answer that anyone starting the topic would try. \Cref{tab:general} gives that first answer next to what we did to make it more reliable.
+
+\begin{table}[!htbp]
+\centering\small
+\caption{The general approach to each question and our refinement of it.}
+\label{tab:general}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright}p{2.2cm}>{\raggedright}p{4.6cm}X@{}}
+\toprule
+Question & General approach & How we refined it\\
+\midrule
+Q1: do the rules of SC, TSO and PSO form a strict ladder? & Write each model as a rule on the order of reads and writes, try the rule on small litmus tests, and compare the results by hand. &
+We turned the rules into a checker that tries every possible execution of a program. TSO and PSO needed two graphs, a global one and a same-address one. We ran it on 5 hand-written and 2000 random programs, and compared it with a separate store-buffer simulation (0 differences). The ladder held: SC allows less than TSO in 31 programs, TSO allows less than PSO in 55, and the order was never broken.\\
+Q2: does a real processor show the relaxed behaviour? & Run the store-buffering test on a real machine many times, and look for the result that SC forbids. &
+For each setting we ran ten million tries in all (ten runs), and varied the start offset between the two threads. The forbidden result appeared 381,311 times with no offset and never with a fence in any run, so the effect is real and the fence removes it.\\
+Q3: what does strong ordering cost, and why is it not shipped? & Argue that a core which waits for every store is slow, using the simple formula $1 + f\cdot L$ for cycles per instruction. &
+We built a cycle-by-cycle model with a store buffer of $B$ entries. Waiting for every store gives 1.873 cycles per instruction, and a buffer of 56 entries gives 1.011. We then asked whether speculation can avoid the cost, and gave four reasons why SC is still not demanded.\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{How Claude was used}
+\label{sec:claudeuse}
+
+We used Claude, an AI assistant made by Anthropic, as a tool while preparing this paper. It was used for the following.
+\begin{itemize}
+\item \textbf{Code debugging.} Finding and fixing errors in our programs, and tidying the code of the checker and the models.
+\item \textbf{Test cases.} Generating the 2000 random test programs that the checker and the simulation are run on.
+\item \textbf{Grammar and wording.} Correcting grammatical errors and improving the wording of sentences.
+\item \textbf{Titles.} Suggesting titles for the chapters and sections.
+\item \textbf{Checking for logical inconsistencies.} Reading the text for statements that contradict each other, for numbers that differ between places, and for ideas used before they are introduced.
+\end{itemize}
+
+% =====================================================================
 \cleardoublepage
 \phantomsection
 \addcontentsline{toc}{chapter}{Bibliography}
-\bibliographystyle{unsrtnat}
-\bibliography{\jobname}
+\begin{thebibliography}{5}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Sarangi(2025)]{sarangiBasic}
+Smruti~R. Sarangi.
+\newblock \emph{Basic Computer Architecture}.
+\newblock White Falcon Publishing, Chandigarh, India, version 3.09 edition,
+  2025.
+\newblock \url{https://srsarangi.github.io/archbook/archbook.pdf}.
+
+\bibitem[Lamport(1979)]{lamport1979}
+Leslie Lamport.
+\newblock How to make a multiprocessor computer that correctly executes
+  multiprocess programs.
+\newblock \emph{IEEE Transactions on Computers}, C-28\penalty0 (9):\penalty0
+  690--691, 1979.
+
+\bibitem[Sarangi(2023)]{sarangiNextGen}
+Smruti~R. Sarangi.
+\newblock \emph{Next-Gen Computer Architecture: Till the End of Silicon}.
+\newblock White Falcon Publishing, Chandigarh, India, 2023.
+\newblock
+  \url{https://www.cse.iitd.ac.in/~srsarangi/advbook/nextgen-comp-arch.pdf}.
+
+\bibitem[Owens et~al.(2009)Owens, Sarkar, and Sewell]{owens2009}
+Scott Owens, Susmit Sarkar, and Peter Sewell.
+\newblock A better x86 memory model: x86-{TSO}.
+\newblock In \emph{Theorem Proving in Higher Order Logics (TPHOLs)}, volume
+  5674 of \emph{Lecture Notes in Computer Science}, pages 391--407. Springer,
+  2009.
+
+\bibitem[Alglave et~al.(2014)Alglave, Maranget, and Tautschnig]{alglave2014}
+Jade Alglave, Luc Maranget, and Michael Tautschnig.
+\newblock Herding cats: Modelling, simulation, testing, and data mining for
+  weak memory.
+\newblock \emph{ACM Transactions on Programming Languages and Systems},
+  36\penalty0 (2):\penalty0 7:1--7:74, 2014.
+
+\end{thebibliography}
 
 \glsaddall
 \printglossary[title=Glossary]
@@ -3532,3 +3589,4 @@ makeindex term_paper && pdflatex term_paper && pdflatex term_paper
 \printindex
 
 \end{document}
+

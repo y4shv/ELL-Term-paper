@@ -1,0 +1,23 @@
+Store-buffer machine simulation, compared with checker.py
+============================================================
+test         model   states    machine    checker  same?
+SB           SC         13          3          3  yes
+SB           TSO        34          4          4  yes
+SB           PSO        34          4          4  yes
+SB+mfences   SC         22          3          3  yes
+SB+mfences   TSO        31          3          3  yes
+SB+mfences   PSO        31          3          3  yes
+MP           SC         13          3          3  yes
+MP           TSO        23          3          3  yes
+MP           PSO        29          4          4  yes
+MP+stbar     SC         17          3          3  yes
+MP+stbar     TSO        30          3          3  yes
+MP+stbar     PSO        38          3          3  yes
+OwnWrite     SC          3          1          1  yes
+OwnWrite     TSO         5          1          1  yes
+OwnWrite     PSO         5          1          1  yes
+
+Random programs: 2000, models per program: 3
+  (program, model) pairs where machine and checker differ: 0
+
+Machine and checker agree everywhere: yes

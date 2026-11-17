@@ -1,0 +1,34 @@
+0000000000001520 <t0_sb>:
+    1520:	endbr64
+    1524:	movl   $0x1,0x2c72(%rip)        # 41a0 <X>
+    152e:	mov    0x2c2c(%rip),%eax        # 4160 <Y>
+    1534:	ret
+0000000000001540 <t1_sb>:
+    1540:	endbr64
+    1544:	movl   $0x1,0x2c12(%rip)        # 4160 <Y>
+    154e:	mov    0x2c4c(%rip),%eax        # 41a0 <X>
+    1554:	ret
+0000000000001560 <t0_sb_mfence>:
+    1560:	endbr64
+    1564:	movl   $0x1,0x2c32(%rip)        # 41a0 <X>
+    156e:	mfence
+    1571:	mov    0x2be9(%rip),%eax        # 4160 <Y>
+    1577:	ret
+0000000000001580 <t1_sb_mfence>:
+    1580:	endbr64
+    1584:	movl   $0x1,0x2bd2(%rip)        # 4160 <Y>
+    158e:	mfence
+    1591:	mov    0x2c09(%rip),%eax        # 41a0 <X>
+    1597:	ret
+00000000000015a0 <t0_mp>:
+    15a0:	endbr64
+    15a4:	movl   $0x1,0x2bf2(%rip)        # 41a0 <X>
+    15ae:	movl   $0x1,0x2ba8(%rip)        # 4160 <Y>
+    15b8:	ret
+00000000000016d0 <t1_mp>:
+    16d0:	endbr64
+    16d4:	mov    0x2a86(%rip),%eax        # 4160 <Y>
+    16da:	mov    %eax,(%rdi)
+    16dc:	mov    0x2abe(%rip),%eax        # 41a0 <X>
+    16e2:	mov    %eax,(%rsi)
+    16e4:	ret

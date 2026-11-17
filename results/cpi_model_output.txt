@@ -1,0 +1,29 @@
+Part 1: back-of-envelope CPI = 1 + f * L (every store stalls)
+     f      L      CPI
+  0.05      4     1.20
+  0.05    100     6.00
+  0.05    300    16.00
+  0.10      4     1.40
+  0.10    100    11.00
+  0.10    300    31.00
+  0.20      4     1.80
+  0.20    100    21.00
+  0.20    300    61.00
+
+Part 2: simulation, f = 0.10, miss rate m = 0.05, L_hit = 4, L_miss = 100
+average store latency = 8.8 cycles; formula for stall design gives CPI = 1.88
+stall design, simulated: CPI = 1.873
+       B        CPI
+       1      1.498
+       2      1.412
+       4      1.328
+       8      1.209
+      16      1.105
+      32      1.038
+      56      1.011
+
+Part 3: when stores arrive faster than memory can finish them
+f = 0.20, m = 0.10: average store latency 13.6, f x latency = 2.72
+stall design, simulated: CPI = 3.701
+buffer B =  8: CPI = 2.727
+buffer B = 56: CPI = 2.696

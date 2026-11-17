@@ -1,0 +1,27 @@
+test outcome SC TSO PSO as expected?
+SB           (0, 0)         F   A   A   yes
+SB+mfences   (0, 0)         F   F   F   yes
+MP           (1, 0)         F   F   A   yes
+MP+stbar     (1, 0)         F   F   F   yes
+OwnWrite     (0,)           F   F   F   yes
+
+Candidate executions of SB
+  who each read reads from           (r0,r1)       SC     TSO     PSO
+  b reads init_y, d reads init_x     (0, 0)     cycle allowed allowed
+  b reads init_y, d reads a          (0, 1)   allowed allowed allowed
+  b reads c, d reads init_x          (1, 0)   allowed allowed allowed
+  b reads c, d reads a               (1, 1)   allowed allowed allowed
+
+Candidate executions of MP
+  who each read reads from           (r0,r1)       SC     TSO     PSO
+  c reads init_y, d reads init_x     (0, 0)   allowed allowed allowed
+  c reads init_y, d reads a          (0, 1)   allowed allowed allowed
+  c reads b, d reads init_x          (1, 0)     cycle   cycle allowed
+  c reads b, d reads a               (1, 1)   allowed allowed allowed
+
+Subset check on 2005 programs
+  SC <= TSO <= PSO fails:             0
+  SC allows strictly less than TSO:   31
+  TSO allows strictly less than PSO:  55
+
+All checks passed: yes
