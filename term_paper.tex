@@ -9,6 +9,50 @@
 %    && makeindex term_paper && pdflatex term_paper && pdflatex term_paper
 % =====================================================================
 \begin{filecontents*}{\jobname.bib}
+@article{lamport1979how,
+  title = {How to Make a Multiprocessor Computer That Correctly Executes Multiprocess Programs},
+  author = {Lamport, Leslie},
+  year = {1979},
+  month = sep,
+  journal = {IEEE Transactions on Computers},
+  volume = {C-28},
+  number = {9},
+  pages = {690--691},
+  issn = {0018-9340},
+  doi = {10.1109/TC.1979.1675439},
+  url = {https://doi.org/10.1109/TC.1979.1675439}
+}
+
+@inproceedings{owens2009better,
+  title = {A Better x86 Memory Model: {x86-TSO}},
+  booktitle = {Theorem Proving in Higher Order Logics ({TPHOLs} 2009)},
+  author = {Owens, Scott and Sarkar, Susmit and Sewell, Peter},
+  editor = {Berghofer, Stefan and Nipkow, Tobias and Urban, Christian and Wenzel, Makarius},
+  year = {2009},
+  series = {Lecture Notes in Computer Science},
+  volume = {5674},
+  pages = {391--407},
+  publisher = {Springer},
+  address = {Berlin, Heidelberg},
+  isbn = {978-3-642-03358-2},
+  doi = {10.1007/978-3-642-03359-9_27},
+  url = {https://doi.org/10.1007/978-3-642-03359-9_27}
+}
+
+@article{alglave2014herding,
+  title = {Herding Cats: Modelling, Simulation, Testing, and Data Mining for Weak Memory},
+  author = {Alglave, Jade and Maranget, Luc and Tautschnig, Michael},
+  year = {2014},
+  month = jul,
+  journal = {ACM Transactions on Programming Languages and Systems},
+  volume = {36},
+  number = {2},
+  pages = {7:1--7:74},
+  issn = {0164-0925},
+  doi = {10.1145/2627752},
+  url = {https://doi.org/10.1145/2627752}
+}
+
 @book{sarangiBasic,
   author    = {Smruti R. Sarangi},
   title     = {Basic Computer Architecture},
@@ -25,34 +69,6 @@
   address   = {Chandigarh, India},
   year      = {2023},
   note      = {\url{https://www.cse.iitd.ac.in/~srsarangi/advbook/nextgen-comp-arch.pdf}}
-}
-@article{lamport1979,
-  author  = {Leslie Lamport},
-  title   = {How to Make a Multiprocessor Computer That Correctly Executes Multiprocess Programs},
-  journal = {IEEE Transactions on Computers},
-  volume  = {C-28},
-  number  = {9},
-  pages   = {690--691},
-  year    = {1979}
-}
-@inproceedings{owens2009,
-  author    = {Scott Owens and Susmit Sarkar and Peter Sewell},
-  title     = {A Better x86 Memory Model: x86-{TSO}},
-  booktitle = {Theorem Proving in Higher Order Logics (TPHOLs)},
-  series    = {Lecture Notes in Computer Science},
-  volume    = {5674},
-  pages     = {391--407},
-  publisher = {Springer},
-  year      = {2009}
-}
-@article{alglave2014,
-  author  = {Jade Alglave and Luc Maranget and Michael Tautschnig},
-  title   = {Herding Cats: Modelling, Simulation, Testing, and Data Mining for Weak Memory},
-  journal = {ACM Transactions on Programming Languages and Systems},
-  volume  = {36},
-  number  = {2},
-  pages   = {7:1--7:74},
-  year    = {2014}
 }
 \end{filecontents*}
 
@@ -489,7 +505,7 @@ These are the names and symbols we use throughout the paper.
 \item \textbf{Threads.} \textbf{T0} and \textbf{T1} are the two threads, and each runs on \emph{its own core}.
 \item \textbf{Naming the operations.} The four memory operations of a \gls{litmus} are named with the letters \textbf{a, b, c, d}, in the order in which they are written. A figure can then say $a \to b$ instead of repeating the instruction.
 \item \textbf{Writing a result.} \outc{0}{1} always means $(\code{r0}, \code{r1}) = (0, 1)$, that is, \code{r0} is 0 and \code{r1} is 1.
-\item \textbf{References.} A small raised number, such as\cite{lamport1979}, points to the \emph{bibliography}. A mark such as \S12.4.3 points to a section of one of \emph{Prof. Sarangi's books}, and we name the book each time.
+\item \textbf{References.} A small raised number, such as\cite{lamport1979how}, points to the \emph{bibliography}. A mark such as \S12.4.3 points to a section of one of \emph{Prof. Sarangi's books}, and we name the book each time.
 \end{itemize}
 
 % =====================================================================
@@ -526,21 +542,21 @@ From the further reading in the two books we picked three research papers. Each 
 \subsection{Lamport, 1979: what sequential consistency means}
 \label{sec:lamport}
 
-Leslie Lamport's three-page paper\cite{lamport1979} is where the term \emph{sequentially consistent} comes from. He calls a multiprocessor sequentially consistent when the result of any execution is the same as if the operations of all the processors were executed in some sequential order, with the operations of each individual processor appearing in that sequence in the order given by its program.
+Leslie Lamport's three-page paper\cite{lamport1979how} is where the term \emph{sequentially consistent} comes from. He calls a multiprocessor sequentially consistent when the result of any execution is the same as if the operations of all the processors were executed in some sequential order, with the operations of each individual processor appearing in that sequence in the order given by its program.
 
 \paragraph{What we took.} We took this definition word for word as our meaning of \gls{sc} (\cref{sec:sb}). It is also the reason we count interleavings in \cref{sec:interleave}: an interleaving is exactly one of Lamport's sequential orders. Lamport also gives two requirements that a machine of his time could meet to be sequentially consistent. The first is that each processor issues its memory requests in the order of its program. A store buffer breaks this requirement on purpose, because it lets a later read go to memory before an earlier write has arrived there. That one observation is the starting point of \cref{ch:storebuf}.
 
 \subsection{Owens, Sarkar and Sewell, 2009: what x86 actually does}
 \label{sec:owens}
 
-Processor manuals describe memory ordering in plain English, and plain English can be read in more than one way. Owens, Sarkar and Sewell\cite{owens2009} therefore wrote down a precise model of x86 multiprocessors, called x86-TSO, which agrees with the examples in the vendors' manuals and with the behaviour of real machines. They give the model in two equivalent forms. One is an abstract machine in which every hardware thread has a FIFO store buffer in front of a shared memory. The other is a set of rules about the orders that are allowed.
+Processor manuals describe memory ordering in plain English, and plain English can be read in more than one way. Owens, Sarkar and Sewell\cite{owens2009better} therefore wrote down a precise model of x86 multiprocessors, called x86-TSO, which agrees with the examples in the vendors' manuals and with the behaviour of real machines. They give the model in two equivalent forms. One is an abstract machine in which every hardware thread has a FIFO store buffer in front of a shared memory. The other is a set of rules about the orders that are allowed.
 
 \paragraph{What we took.} We took three things. The first is the abstract machine itself: a read first looks in its own thread's buffer for the newest write to the same address and otherwise reads memory, buffered writes drain to memory oldest first, and \code{mfence} waits until the buffer is empty. Our store-buffer simulation in \cref{sec:sim} is built on exactly this picture. The second is the store-buffering test, which the paper uses as its first example of x86 behaviour that SC forbids, and which is the central test of our paper. The third is the support for our claim that x86 keeps every program-order pair except a write followed by a read, which is how we define \gls{tso} in \cref{sec:tso}.
 
 \subsection{Alglave, Maranget and Tautschnig, 2014: arrows and cycles}
 \label{sec:alglave}
 
-Alglave, Maranget and Tautschnig\cite{alglave2014} describe many memory models in one common language. An execution is a set of events joined by a few relations, among them program order, \gls{rf}, \gls{co} and \gls{fr}. A model is then a short list of conditions saying that certain unions of these relations must not contain a cycle.
+Alglave, Maranget and Tautschnig\cite{alglave2014herding} describe many memory models in one common language. An execution is a set of events joined by a few relations, among them program order, \gls{rf}, \gls{co} and \gls{fr}. A model is then a short list of conditions saying that certain unions of these relations must not contain a cycle.
 
 \paragraph{What we took.} This is the mathematical engine of our \cref{ch:math} and of our checker. From this paper we took the four relations \po, \rf, \co\ and \fr, with \fr\ defined from the other two; the condition that the union of these relations must be acyclic; the idea that a weaker model keeps only part of program order, the \emph{preserved} program order; the split of reads-from into an internal part, inside one thread, and an external part, between threads; and the separate rule that accesses to a single address always behave as if sequentially consistent, which we call \gls{scl} (\cref{sec:scloc}). The paper covers much more than this, including models of ARM and POWER processors and a family of software tools, and we used none of that.
 
@@ -614,7 +630,7 @@ The buffer drains into the L1 cache, not straight into main memory. Once the ent
 
 This is a large saving of time, and \cref{ch:cost} puts a number on it with a small model. This is also the source of the problem. After a store has left the core and entered the buffer, other cores cannot see it until the buffer drains. The store is finished as far as its own core is concerned, and it does not yet exist for everybody else.
 
-Lamport's first requirement for sequential consistency, from \cref{sec:lamport}, was that each processor sends its memory requests in \gls{po}\cite{lamport1979}. A store buffer lets a later load reach memory before an earlier store does, so a machine with a store buffer gives up that requirement. Whether the program can tell is the question of the next two chapters.
+Lamport's first requirement for sequential consistency, from \cref{sec:lamport}, was that each processor sends its memory requests in \gls{po}\cite{lamport1979how}. A store buffer lets a later load reach memory before an earlier store does, so a machine with a store buffer gives up that requirement. Whether the program can tell is the question of the next two chapters.
 
 \section{Store-to-load forwarding}
 \label{sec:forwarding}
@@ -713,7 +729,7 @@ We look at one address, say \code{x}, and ignore all other variables. For that a
   \item a thread's own reads and writes of \code{x} stay in program order (this comes from forwarding);
   \item every read of \code{x} returns a value that fits this order.
 \end{itemize}
-We call this \emph{SC per location}\index{SC per location}\cite{alglave2014}.
+We call this \emph{SC per location}\index{SC per location}\cite{alglave2014herding}.
 
 A small example: one thread does \code{x = 1; r = x;}. Even if \code{x = 1} is still in the store buffer, forwarding makes \code{r} equal to 1, never the old value 0.
 
@@ -1466,7 +1482,7 @@ We also asked the checker about SB with a fence in T0 only. It allows \outc{0}{0
 
 \Cref{fig:checkout} shows what \code{python checker.py} prints. The output has three parts, one after the other, and a checker is only useful if we can read them correctly, so we go through each part here.
 
-\paragraph{The verdicts.} Each row of the first part is one litmus test. The columns give the outcome that we asked about, the verdict of SC, TSO and PSO (\code{A} for allowed and \code{F} for forbidden), and whether this matches the answer that we stored in \code{EXPECTED}. SB is allowed under TSO and PSO and forbidden under SC. MP is allowed only under PSO. SB with \code{mfence} and MP with \code{stbar} are forbidden under all three models, so a fence removes exactly the outcome that the weaker models had added. OwnWrite is forbidden under all three models, because the graph of one address catches it. Every row says \code{yes} in the last column, so the checker gives the same answers that we worked out by hand in \cref{ch:math}. The verdicts on SB and MP for SC and TSO are also standard results\cite{owens2009}, so if our code had disagreed with them, the code would have been wrong.
+\paragraph{The verdicts.} Each row of the first part is one litmus test. The columns give the outcome that we asked about, the verdict of SC, TSO and PSO (\code{A} for allowed and \code{F} for forbidden), and whether this matches the answer that we stored in \code{EXPECTED}. SB is allowed under TSO and PSO and forbidden under SC. MP is allowed only under PSO. SB with \code{mfence} and MP with \code{stbar} are forbidden under all three models, so a fence removes exactly the outcome that the weaker models had added. OwnWrite is forbidden under all three models, because the graph of one address catches it. Every row says \code{yes} in the last column, so the checker gives the same answers that we worked out by hand in \cref{ch:math}. The verdicts on SB and MP for SC and TSO are also standard results\cite{owens2009better}, so if our code had disagreed with them, the code would have been wrong.
 
 \paragraph{The candidate executions.} The second part lists every guess of SB and of MP. Each row says which write each read takes its value from, the resulting pair $(\code{r0},\code{r1})$, and what each model says about that guess. The word \code{cycle} means that the graph of this guess has a cycle, so the model rejects it, and \code{allowed} means that no graph has a cycle. In SB only the first row, where both reads see the initial values, changes between the models: SC rejects it and TSO and PSO allow it. In MP only the row $(1, 0)$ changes: SC and TSO reject it and PSO allows it. These are the same rows that we drew as graphs in \cref{ch:math}, now found by the program.
 
@@ -1525,7 +1541,7 @@ All checks passed: yes
 \section{A second check: simulating the store buffers}
 \label{sec:sim}
 
-The checker works with arrows, which are an abstract description. We wanted a second answer that comes from the hardware picture of \cref{ch:storebuf} instead. So we wrote a second, independent program, \code{sb\_machine.py}, that simulates a machine with store buffers step by step and tries every possible order of steps. It follows the abstract machine of Owens, Sarkar and Sewell\cite{owens2009}, extended with the PSO buffer of \cref{sec:models-words}.
+The checker works with arrows, which are an abstract description. We wanted a second answer that comes from the hardware picture of \cref{ch:storebuf} instead. So we wrote a second, independent program, \code{sb\_machine.py}, that simulates a machine with store buffers step by step and tries every possible order of steps. It follows the abstract machine of Owens, Sarkar and Sewell\cite{owens2009better}, extended with the PSO buffer of \cref{sec:models-words}.
 
 \paragraph{The simulated machine.} There is one shared memory and one store buffer per thread. At each step, the machine does one of two things.
 \begin{itemize}
@@ -2041,7 +2057,7 @@ Even if speculation makes SC nearly as fast as TSO, no mainstream processor offe
 \toprule
 Reason & What it says & What our work shows\\
 \midrule
-1. Habit and compatibility & Existing software and instruction sets already assume TSO or weaker, so a stronger model buys little for old code. & x86 has been TSO for a long time\cite{owens2009}.\\
+1. Habit and compatibility & Existing software and instruction sets already assume TSO or weaker, so a stronger model buys little for old code. & x86 has been TSO for a long time\cite{owens2009better}.\\
 2. Hardware cost & Speculation needs tracking bits, checkpoints and a way to roll back, and these cost chip area and design effort. & \Cref{sec:spec}: every early load and the work after it must stay undoable until older stores drain.\\
 3. Software already copes & Data-race-free programs see SC anyway (DRF-SC), and the few places that need order use fences. & \Cref{par:drf}: the fences are already inside locks and atomics.\\
 4. Risk under sharing & When threads share a lot, guesses fail often, and frequent squashes waste work. & \Cref{fig:spec}: the bottom branch is the expensive one, and heavy sharing makes it common.\\
@@ -3553,12 +3569,14 @@ Smruti~R. Sarangi.
   2025.
 \newblock \url{https://srsarangi.github.io/archbook/archbook.pdf}.
 
-\bibitem[Lamport(1979)]{lamport1979}
+\bibitem[Lamport(1979)]{lamport1979how}
 Leslie Lamport.
 \newblock How to make a multiprocessor computer that correctly executes
   multiprocess programs.
 \newblock \emph{IEEE Transactions on Computers}, C-28\penalty0 (9):\penalty0
   690--691, 1979.
+\newblock \doi{10.1109/TC.1979.1675439}.
+\newblock \doi{10.1109/TC.1979.1675439}.
 
 \bibitem[Sarangi(2023)]{sarangiNextGen}
 Smruti~R. Sarangi.
@@ -3567,19 +3585,21 @@ Smruti~R. Sarangi.
 \newblock
   \url{https://www.cse.iitd.ac.in/~srsarangi/advbook/nextgen-comp-arch.pdf}.
 
-\bibitem[Owens et~al.(2009)Owens, Sarkar, and Sewell]{owens2009}
+\bibitem[Owens et~al.(2009)Owens, Sarkar, and Sewell]{owens2009better}
 Scott Owens, Susmit Sarkar, and Peter Sewell.
 \newblock A better x86 memory model: x86-{TSO}.
 \newblock In \emph{Theorem Proving in Higher Order Logics (TPHOLs)}, volume
   5674 of \emph{Lecture Notes in Computer Science}, pages 391--407. Springer,
   2009.
+\newblock \doi{10.1007/978-3-642-03359-9_27}.
 
-\bibitem[Alglave et~al.(2014)Alglave, Maranget, and Tautschnig]{alglave2014}
+\bibitem[Alglave et~al.(2014)Alglave, Maranget, and Tautschnig]{alglave2014herding}
 Jade Alglave, Luc Maranget, and Michael Tautschnig.
 \newblock Herding cats: Modelling, simulation, testing, and data mining for
   weak memory.
 \newblock \emph{ACM Transactions on Programming Languages and Systems},
   36\penalty0 (2):\penalty0 7:1--7:74, 2014.
+\newblock \doi{10.1145/2627752}.
 
 \end{thebibliography}
 
