@@ -388,20 +388,21 @@ ppo & preserved program order & rfe & reads-from, external\\
 \chapter*{Map of the Paper}
 \addcontentsline{toc}{chapter}{Map of the Paper}
 \begin{center}
+\hyphenpenalty=10000\relax
 \begin{tikzpicture}[
-  bx/.style={draw, rounded corners=3pt, thick, align=center, font=\footnotesize\hyphenpenalty=10000 , inner sep=5pt, text width=4.3cm, minimum height=1.25cm},
+  bx/.style={draw, rounded corners=3pt, thick, align=center, font=\footnotesize, inner sep=5pt, text width=4.3cm, minimum height=1.25cm},
   wide/.style={bx, text width=11.5cm, minimum height=1.0cm},
   ar/.style={-{Stealth[length=2.6mm]}, very thick, draw=black!70}]
-\node[wide, fill=boxgrey] (c1) {\textbf{1\; Introduction}\\ a small program with a surprising result, why the topic matters, the three questions};
-\node[wide, fill=boxgrey, below=0.55cm of c1] (c2) {\textbf{2\; What We Read}\\ the books and papers we used, and what we took from each};
-\node[bx, fill=boxblue, below=1.1cm of c2, xshift=-4.75cm] (c3) {\textbf{3\; Memory and the Store Buffer}\\ the hardware cause};
-\node[bx, fill=boxblue, right=0.45cm of c3] (c4) {\textbf{4\; Two Cores}\\ the three models in words, the SB and MP tests};
-\node[bx, fill=boxblue, right=0.45cm of c4] (c5) {\textbf{5\; The Rules as Math}\\ events, relations, graphs, the rule of each model};
+\node[wide, fill=boxgrey] (c1) {\textbf{1\hspace{0.5em}Introduction}\\ a small program with a surprising result, why the topic matters, the three questions};
+\node[wide, fill=boxgrey, below=0.55cm of c1] (c2) {\textbf{2\hspace{0.5em}What We Read}\\ the books and papers we used, and what we took from each};
+\node[bx, fill=boxblue, below=1.1cm of c2, xshift=-4.75cm] (c3) {\textbf{3\hspace{0.5em}Memory and the Store Buffer}\\ the hardware cause};
+\node[bx, fill=boxblue, right=0.45cm of c3] (c4) {\textbf{4\hspace{0.5em}Two Cores}\\ the three models in words, the SB and MP tests};
+\node[bx, fill=boxblue, right=0.45cm of c4] (c5) {\textbf{5\hspace{0.5em}The Rules as Math}\\ events, relations, graphs, the rule of each model};
 \node[draw=black!60, dashed, rounded corners=4pt, inner sep=7pt, fit=(c3)(c4)(c5), label={[font=\footnotesize\bfseries, text=black!70]above left:The theory}] (theory) {};
-\node[bx, fill=boxgreen, below=1.5cm of c3] (c6) {\textbf{6\; The Python Checker}\\ the rules as a program, 2005 programs, a second simulation\\ \textbf{answers Q1}};
-\node[bx, fill=boxorange, below=1.5cm of c4] (c7) {\textbf{7\; A Real Machine}\\ the SB test on x86-64, with and without a fence\\ \textbf{answers Q2}};
-\node[bx, fill=boxpurple, below=1.5cm of c5] (c8) {\textbf{8\; What Strong Ordering Costs}\\ a cost model, speculation, why SC is not shipped\\ \textbf{answers Q3}};
-\node[wide, fill=boxgrey, below=1.1cm of c7] (c9) {\textbf{9\; Conclusion}\\ what the paper shows, its limits, future work};
+\node[bx, fill=boxgreen, below=1.5cm of c3] (c6) {\textbf{6\hspace{0.5em}The Python Checker}\\ the rules as a program, 2005 programs, a second simulation\\ \textbf{answers Q1}};
+\node[bx, fill=boxorange, below=1.5cm of c4] (c7) {\textbf{7\hspace{0.5em}A Real Machine}\\ the SB test on x86-64, with and without a fence\\ \textbf{answers Q2}};
+\node[bx, fill=boxpurple, below=1.5cm of c5] (c8) {\textbf{8\hspace{0.5em}What Strong Ordering Costs}\\ a cost model, speculation, why SC is not shipped\\ \textbf{answers Q3}};
+\node[wide, fill=boxgrey, below=1.1cm of c7] (c9) {\textbf{9\hspace{0.5em}Conclusion}\\ what the paper shows, its limits, future work};
 \node[wide, draw=black!60, dashed, fill=white, below=0.7cm of c9] (app) {\textbf{Appendices A to G}\\ plagiarism report, readability, weekly schedule, source code, measurement data, how to reproduce, how the work was done};
 \draw[ar] (c1) -- (c2);
 \draw[ar] (c2.south) -- ++(0,-0.35) -| (theory.north);
@@ -501,21 +502,21 @@ This chapter sets out where our ideas come from. Our reading started with the tw
 \section{How the two books relate to this paper}
 \label{sec:books}
 
-The two books play different roles. \emph{Basic Computer Architecture}\cite{sarangiBasic} is the ELL305 textbook. It covers the hardware of a computer all the way up to multiprocessors, and its \S12.4 is where our topic lives. \emph{Next-Gen Computer Architecture}\cite{sarangiNextGen} picks up where the first book stops. It explains out-of-order cores in detail, and its Chapter 9 treats memory models with the formal tools that we use in \cref{ch:math}.
+The two books play different roles. \emph{Basic Computer Architecture}\cite{sarangiBasic} is the ELL305 textbook. It covers the hardware of a computer all the way up to multiprocessors, and the part of its multiprocessor chapter that deals with memory models is where our topic lives. \emph{Next-Gen Computer Architecture}\cite{sarangiNextGen} picks up where the first book stops. It explains out-of-order cores in detail, and its Chapter 9 treats memory models with the formal tools that we use in \cref{ch:math}.
 
 We used the two books for different things. The first book gave us the hardware background: how a core executes instructions, how a pipeline and a cache work, and, in its Chapter 12, how several cores share one memory. The second book gave us the inside of a modern core, where the store buffer and the reorder buffer live, and the language of relations and graphs.
 
 \subsection{Book 1: Basic Computer Architecture}
 
-We worked from version 3.09 of the textbook\cite{sarangiBasic}. Chapter 12, on multiprocessor systems, starts on p.\,565 and is the chapter we read most closely.
+We worked from version 3.09 of the textbook\cite{sarangiBasic}. The chapter on multiprocessor systems (Chapter 12) is the one we read most closely.
 
-\paragraph{How this book shaped the paper.} Section 12.4.3 gave us the problem itself, and Section 12.4.2 gave us the warning, which we repeat in \cref{sec:coherence}, that a coherent machine can still show surprising orders. Section 12.4.7 was the bridge to our Q3, because it is where the book moves from what a model says to how hardware makes it true.
+\paragraph{How this book shaped the paper.} The part of the chapter that defines the memory model gave us the problem itself. The part on cache coherence gave us the warning, which we repeat in \cref{sec:coherence}, that a coherent machine can still show surprising orders. The part on how hardware implements a memory model was the bridge to our Q3, because it is where the book moves from what a model says to how hardware makes it true.
 
 \subsection{Book 2: Next-Gen Computer Architecture}
 
-In the second book\cite{sarangiNextGen}, Chapter 9, on multicore systems, starts on p.\,415 and is our main reference for how threads interact. Chapter 4 is our reference for how a single core handles its loads and stores.
+In the second book\cite{sarangiNextGen}, Chapter 9, on multicore systems, is our main reference for how threads interact. Chapter 4 is our reference for how a single core handles its loads and stores.
 
-\paragraph{How this book shaped the paper.} Three things in our paper come straight from this book. The first is the load-store queue of Chapter 4, which is where \gls{fwd} happens, and which we draw as a circuit in \cref{fig:forwarding}. The second is Chapter 9's way of treating an execution as a graph whose edges are relations such as \rf, together with its four sections on the four kinds of \gls{po} (\S9.5.2 to \S9.5.5). Those four sections line up exactly with the four rows of our \cref{tab:pairs}, which is the table that defines each model in our checker. The third is the material on load speculation and replay in Chapter 5, which is the hardware behind the speculation argument of \cref{ch:cost}.
+\paragraph{How this book shaped the paper.} Three things in our paper come straight from this book. The first is the load-store queue of Chapter 4, which is where \gls{fwd} happens, and which we draw as a circuit in \cref{fig:forwarding}. The second is Chapter 9's way of treating an execution as a graph whose edges are relations such as \rf, together with its four sections, one for each kind of preserved \gls{po}. Those four sections line up exactly with the four rows of our \cref{tab:pairs}, which is the table that defines each model in our checker. The third is the material on load speculation and replay in Chapter 5, which is the hardware behind the speculation argument of \cref{ch:cost}.
 
 \section{Three research papers}
 \label{sec:papers}
@@ -532,7 +533,7 @@ Leslie Lamport's three-page paper\cite{lamport1979} is where the term \emph{sequ
 \subsection{Owens, Sarkar and Sewell, 2009: what x86 actually does}
 \label{sec:owens}
 
-Processor manuals describe memory ordering in English, and the English has been read in different ways. Owens, Sarkar and Sewell\cite{owens2009} wrote down a precise model of x86 multiprocessors, called x86-TSO, which agrees with the examples in the processor vendors' manuals. They give the model in two equivalent forms. One is an abstract machine in which every hardware thread has a FIFO store buffer in front of a shared memory. The other is a set of rules about the orders that are allowed.
+Processor manuals describe memory ordering in plain English, and plain English can be read in more than one way. Owens, Sarkar and Sewell\cite{owens2009} therefore wrote down a precise model of x86 multiprocessors, called x86-TSO, which agrees with the examples in the vendors' manuals and with the behaviour of real machines. They give the model in two equivalent forms. One is an abstract machine in which every hardware thread has a FIFO store buffer in front of a shared memory. The other is a set of rules about the orders that are allowed.
 
 \paragraph{What we took.} We took three things. The first is the abstract machine itself: a read first looks in its own thread's buffer for the newest write to the same address and otherwise reads memory, buffered writes drain to memory oldest first, and \code{mfence} waits until the buffer is empty. Our store-buffer simulation in \cref{sec:sim} is built on exactly this picture. The second is the store-buffering test, which the paper uses as its first example of x86 behaviour that SC forbids, and which is the central test of our paper. The third is the support for our claim that x86 keeps every program-order pair except a write followed by a read, which is how we define \gls{tso} in \cref{sec:tso}.
 
@@ -543,7 +544,7 @@ Alglave, Maranget and Tautschnig\cite{alglave2014} describe many memory models i
 
 \paragraph{What we took.} This is the mathematical engine of our \cref{ch:math} and of our checker. From this paper we took the four relations \po, \rf, \co\ and \fr, with \fr\ defined from the other two; the condition that the union of these relations must be acyclic; the idea that a weaker model keeps only part of program order, the \emph{preserved} program order; the split of reads-from into an internal part, inside one thread, and an external part, between threads; and the separate rule that accesses to a single address always behave as if sequentially consistent, which we call \gls{scl} (\cref{sec:scloc}). The paper covers much more than this, including models of ARM and POWER processors and a family of software tools, and we used none of that.
 
-\paragraph{Where to find the papers.} All the books and papers we cited in this report are listed in the file \code{papers.bib} in our GitHub repository, \repourl.
+\paragraph{Where to find the papers.} All the books and papers we cited in this report are kept in a Zotero library, and the library is exported as the file \code{papers.bib} in our GitHub repository, \repourl.
 
 \section{What we chose to leave out}
 
@@ -854,7 +855,7 @@ MP \outc{1}{0} & forbidden & forbidden & allowed\\
 \section{Events}
 \label{sec:events}
 
-Every memory instruction becomes an \emph{event}\index{event}: a read $R(\text{addr}, \text{value})$ or a write $W(\text{addr}, \text{value})$. In SB, $a$ is $W(x,1)$, $b$ is $R(y,?)$, $c$ is $W(y,1)$ and $d$ is $R(x,?)$. The question marks are the values we are asking about. We assume that the initial values are put in memory by \emph{initial writes}, $W(x,0)$ and $W(y,0)$, which happen before everything else. Each of them will act as a node in our graph later on.
+Every memory instruction becomes an \emph{event}\index{event}. It is either a read $R(\text{addr}, \text{value})$ or a write $W(\text{addr}, \text{value})$. In SB, $a$ is $W(x,1)$, $b$ is $R(y,?)$, $c$ is $W(y,1)$ and $d$ is $R(x,?)$. The question marks are the values we are asking about. We assume that the initial values are put in memory by \emph{initial writes}, $W(x,0)$ and $W(y,0)$, which happen before everything else. Each of them will act as a node in our graph later on.
 
 \section{The four relations}
 \label{sec:relations}
@@ -1521,7 +1522,7 @@ All checks passed: yes
 \label{fig:checkout}
 \end{figure}
 
-\section{A second check: simulating the store buffers (\texttt{sb\_machine.py})}
+\section{A second check: simulating the store buffers}
 \label{sec:sim}
 
 The checker works with arrows, which are an abstract description. We wanted a second answer that comes from the hardware picture of \cref{ch:storebuf} instead. So we wrote a second, independent program, \code{sb\_machine.py}, that simulates a machine with store buffers step by step and tries every possible order of steps. It follows the abstract machine of Owens, Sarkar and Sewell\cite{owens2009}, extended with the PSO buffer of \cref{sec:models-words}.
@@ -1653,7 +1654,7 @@ One run repeats this one million times and prints how often each of the four out
 
 Four details decide whether the experiment measures the hardware or something else.
 
-\paragraph{The compiler also reorders.} A C compiler is allowed to swap a store and a load to different variables before the hardware ever sees them, and that would make the result meaningless. We wrote every shared access with C11 atomics using \code{memory\_order\_relaxed}. These stop the compiler from merging or reordering the accesses, and on x86-64 they compile to a plain \code{mov} with no \gls{fence}. We then read the machine code with \code{objdump -d} to confirm that each store really comes before its load (\cref{sec:asm}).
+\paragraph{The compiler also reorders.} A C compiler is allowed to swap a store and a load to different variables before the hardware ever sees them, and that would make the result meaningless. We wrote every shared access as a C11 atomic with the setting \code{memory\_order\_relaxed}. These stop the compiler from merging or reordering the accesses, and on x86-64 they compile to a plain \code{mov} with no \gls{fence}. We then read the machine code with \code{objdump -d} to confirm that each store really comes before its load (\cref{sec:asm}).
 
 \paragraph{The threads must run on different cores.} We pin T0 to CPU 0 and T1 to CPU 1 with \code{pthread\_setaffinity\_np}. On one core there is one \gls{sb}, and the core always sees its own buffered stores through forwarding, so the effect could not appear.
 
@@ -2112,7 +2113,6 @@ The natural next steps are the ones we left out on purpose to keep the paper at 
 \label{app:plag}
 % =====================================================================
 
-The Turnitin similarity report for this paper is placed here. It is generated from the same file that is submitted on Gradescope.
 
 \chapter{Readability Indices}
 \label{app:read}
@@ -3465,7 +3465,7 @@ File & Purpose\\
 \code{summarise.py} & medians, minimums, maximums and the rule of three\\
 \code{cpi\_model.py} & the cost model of \cref{ch:cost}\\
 \code{readability.py} & the readability indices of \cref{app:read}\\
-\code{papers.bib} & the books and papers cited in the report\\
+\code{papers.bib} & the books and papers cited in the report, managed in Zotero and exported as a BibTeX file\\
 \code{results/} & raw outputs: \code{checker\_output.txt}, \code{sb\_machine\_output.txt}, \code{litmus\_raw.csv}, \code{litmus\_summary.txt}, \code{litmus\_disasm.txt}, \code{cpi\_model\_output.txt}\\
 \bottomrule
 \end{tabularx}
@@ -3488,10 +3488,10 @@ The two Python checks take about one second each. The hardware counts will diffe
 
 \section*{Building this paper}
 
-The paper is one file, \code{term\_paper.tex}, with the bibliography embedded in it.
+The paper is one file, \code{term\_paper.tex}. The reference list in it was produced from the Zotero export \code{papers.bib} and is embedded in the file, so no separate BibTeX step is needed.
 
 \begin{lstlisting}[language=bash]
-pdflatex term_paper && bibtex term_paper && makeglossaries term_paper
+pdflatex term_paper && makeglossaries term_paper
 makeindex term_paper && pdflatex term_paper && pdflatex term_paper
 \end{lstlisting}
 
